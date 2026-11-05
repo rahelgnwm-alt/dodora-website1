@@ -64,6 +64,8 @@
 }
 .s-fig {
   width: min(78vw, 380px);
+}
+.s-fig-in {
   border-radius: var(--radius-l);
   overflow: hidden;
   box-shadow: var(--shadow-lift);
@@ -151,41 +153,53 @@
   margin-top: 8px;
 }
 
-// ── Pinned scene layout (desktop, motion allowed) ──
+// ── Pinned scene layout (desktop & tablet, motion allowed — scales fluidly across any viewport height) ──
 .story.is-pinned {
   padding: 0;
   .s-pin {
     height: 100svh;
+    min-height: 420px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     overflow: hidden;
   }
   .s-wrap {
+    flex: 1 1 auto;
+    min-height: 0;
+    width: 100%;
     height: 100%;
-    max-height: 100svh;
     display: flex;
     flex-direction: column;
-    padding-top: calc(var(--header-h) + 16px);
-    padding-bottom: 28px;
-    gap: 16px;
+    padding-top: clamp(74px, 11svh, calc(var(--header-h) + 14px));
+    padding-bottom: clamp(12px, 3svh, 28px);
+    gap: clamp(8px, 1.8svh, 18px);
+  }
+  .s-head {
+    flex: 0 0 auto;
+    gap: clamp(4px, 1svh, 10px);
   }
   .s-title {
-    font-size: clamp(2rem, 3.6vw, 3.8rem);
+    font-size: clamp(1.65rem, min(3.6vw, 5.8svh), 3.8rem);
+  }
+  .s-sub {
+    font-size: clamp(0.9rem, 2.1svh, 1.1rem);
   }
   .s-stage {
     position: relative;
-    flex: 1;
+    flex: 1 1 auto;
+    min-height: 0;
     width: 100%;
-    min-height: 480px;
   }
   .s-fig {
     position: absolute;
     left: 50%;
     top: 50%;
-    width: min(26vw, 44svh);
-    translate: -50% -50%;
+    width: clamp(168px, min(26vw, 44svh), 380px);
     z-index: 2;
+    will-change: transform;
+  }
+  .s-fig-in {
+    will-change: transform, opacity;
   }
   .s-ings {
     position: absolute;
@@ -193,56 +207,79 @@
     display: block;
     max-width: none;
     z-index: 1;
+    pointer-events: none;
   }
   .ing {
     position: absolute;
-    width: min(26%, 300px);
+    width: min(28%, 290px);
     grid-template-columns: auto;
     justify-items: center;
     text-align: center;
     background: transparent;
     padding: 0;
-    gap: 10px;
+    gap: clamp(6px, 1.2svh, 10px);
   }
   .ing-img {
-    width: clamp(84px, 9vw, 128px);
-    height: clamp(84px, 9vw, 128px);
+    width: clamp(56px, min(8.5vw, 13svh), 120px);
+    height: clamp(56px, min(8.5vw, 13svh), 120px);
+    will-change: transform, opacity;
   }
   .ing-txt {
-    padding: 10px 14px;
+    padding: clamp(6px, 1.2svh, 10px) clamp(10px, 1.2vw, 14px);
     border-radius: var(--radius-m);
-    background: rgba(255, 255, 255, 0.82);
+    background: rgba(255, 255, 255, 0.86);
+    will-change: transform, opacity, clip-path;
+    h3 {
+      font-size: clamp(0.8rem, 1.7svh, 0.98rem);
+    }
+    p {
+      font-size: clamp(0.74rem, 1.45svh, 0.88rem);
+    }
   }
   .ing-0 {
-    left: 3%;
-    top: 4%;
+    left: 2%;
+    top: 2%;
   }
   .ing-1 {
-    right: 3%;
-    top: 4%;
+    right: 2%;
+    top: 2%;
   }
   .ing-2 {
-    left: 3%;
-    bottom: 6%;
+    left: 2%;
+    bottom: 11%;
   }
   .ing-3 {
-    right: 3%;
-    bottom: 6%;
+    right: 2%;
+    bottom: 11%;
   }
   .s-claims {
     position: absolute;
     left: 50%;
     bottom: 0;
-    translate: -50% 0;
+    transform: translateX(-50%);
     z-index: 3;
-    width: min(100%, 780px);
+    width: min(100%, 820px);
+    gap: clamp(6px, 1svh, 8px);
+    pointer-events: none;
+    li {
+      padding: clamp(5px, 0.9svh, 8px) clamp(10px, 1.2vw, 14px);
+      font-size: clamp(0.78rem, 1.5svh, 0.9rem);
+    }
   }
   .s-cta {
     position: absolute;
-    right: 2%;
+    right: 3%;
     top: 50%;
-    translate: 0 -50%;
-    width: min(38%, 440px);
+    width: min(44%, 440px);
+    padding: clamp(16px, 3svh, 28px);
+    gap: clamp(4px, 1svh, 8px);
     z-index: 3;
+    will-change: transform, opacity;
+    h3 {
+      font-size: clamp(1.25rem, min(2.4vw, 3.4svh), 1.9rem);
+    }
+    .s-price {
+      font-size: clamp(1.2rem, 2.8svh, 1.6rem);
+    }
   }
 }

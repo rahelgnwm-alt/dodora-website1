@@ -53,7 +53,9 @@ import { IdrPipe, ProductImageComponent } from '../../ui/product-image';
           <div class="s-stage" #stage>
             @if (p(); as prod) {
               <div class="s-fig">
-                <app-pimg [src]="prod.images[0]" [alt]="prod.name + ' — kemasan produk'" sizes="(min-width: 900px) 30vw, 80vw" />
+                <div class="s-fig-in">
+                  <app-pimg [src]="prod.images[0]" [alt]="prod.name + ' — kemasan produk'" sizes="(min-width: 768px) 30vw, 80vw" />
+                </div>
               </div>
             }
 
@@ -131,71 +133,144 @@ export class StoryComponent {
     const q = gsap.utils.selector(root);
     const mm = gsap.matchMedia();
 
-    // Pinned choreography only on wide, capable screens (lite devices get the static layout).
-    const cond = this.motion.env.lite ? '(min-width: 99999px)' : '(min-width: 900px) and (min-height: 620px)';
-    mm.add(cond, () => {
+    // Pinned 4-stage storytelling choreography on all desktop & tablet viewports (no min-height or lite lockout)
+    mm.add('(min-width: 768px)', () => {
       root.classList.add('is-pinned');
+      const pinEl = this.pin().nativeElement;
       const stageEl = this.stage().nativeElement;
       const lines = q('.s-title .ml-i');
+      const headMeta = q('.s-head .eyebrow, .s-sub');
+      const fig = q('.s-fig');
+      const figIn = q('.s-fig-in');
       const ingImgs = q('.ing-img');
       const ingTxt = q('.ing-txt');
       const claims = q('.s-claims li');
+      const cta = q('.s-cta');
 
+      gsap.set(fig, { xPercent: -50, yPercent: -50, x: 0, y: 0, scale: 1 });
+      gsap.set(figIn, { scale: 0.82, y: 64, autoAlpha: 0 });
       gsap.set(lines, { yPercent: 115 });
-      gsap.set(q('.s-sub, .eyebrow'), { autoAlpha: 0, y: 14 });
-      gsap.set(q('.s-fig'), { autoAlpha: 0, scale: 0.84, y: 70 });
+      gsap.set(headMeta, { autoAlpha: 0, y: 14 });
       gsap.set(ingImgs, { autoAlpha: 0, scale: 0.3 });
-      gsap.set(ingTxt, { autoAlpha: 0, y: 18, clipPath: 'inset(0 0 100% 0)' });
+      gsap.set(ingTxt, { autoAlpha: 0, y: 16, clipPath: 'inset(0 0 100% 0)' });
       gsap.set(claims, { autoAlpha: 0, y: 12 });
-      gsap.set(q('.s-cta'), { autoAlpha: 0, x: 70 });
+      gsap.set(cta, { yPercent: -50, x: 70, autoAlpha: 0 });
       gsap.set(q('.sbg-2, .sbg-3'), { autoAlpha: 0 });
 
+      // Stage 1 — Product & headline rise smoothly into center as the section enters view
+      gsap
+        .timeline({
+          defaults: { ease: 'power2.out' },
+          scrollTrigger: {
+            trigger: root,
+            start: 'top 82%',
+            end: 'top top',
+            scrub: 0.35,
+            invalidateOnRefresh: true,
+          },
+        })
+        .to(lines, { yPercent: 0, duration: 0.7, ease: 'expo.out' }, 0)
+        .to(headMeta, { autoAlpha: 1, y: 0, duration: 0.55, stagger: 0.08 }, 0.1)
+        .to(figIn, { autoAlpha: 1, scale: 1, y: 0, duration: 0.9, ease: 'power2.out' }, 0.05);
+
+      // Stages 2–4 — Pinned storytelling sequence
       const tl = gsap.timeline({
         defaults: { ease: 'power2.out' },
         scrollTrigger: {
-          trigger: this.pin().nativeElement,
+          trigger: pinEl,
           start: 'top top',
-          end: '+=190%',
+          end: '+=210%',
           pin: true,
-          scrub: 0.35,
+          scrub: 0.4,
           anticipatePin: 1,
           invalidateOnRefresh: true,
         },
       });
 
-      // Stage 1 — product appears with soft depth + subtle scale
-      tl.to(lines, { yPercent: 0, duration: 0.7, ease: 'expo.out' }, 0)
-        .to(q('.s-sub, .eyebrow'), { autoAlpha: 1, y: 0, duration: 0.5, stagger: 0.1 }, 0.15)
-        .to(q('.s-fig'), { autoAlpha: 1, scale: 1, y: 0, duration: 1, ease: 'expo.out' }, 0.05)
-        // Stage 2 — ingredient visuals emerge around the product (from behind it, outward)
-        .to(q('.sbg-2'), { autoAlpha: 1, duration: 0.8 }, 1)
+      // Stage 2 — Ingredient visuals emerge radially from behind the centered product
+      tl.to(q('.sbg-2'), { autoAlpha: 1, duration: 0.8 }, 0.05)
+        .to(fig, { scale: 1.03, duration: 0.8, ease: 'sine.out' }, 0.05)
         .fromTo(
           ingImgs,
           {
-            x: (_i, el: HTMLElement) => centerDelta(el, q('.s-fig')[0]).x,
-            y: (_i, el: HTMLElement) => centerDelta(el, q('.s-fig')[0]).y,
+            x: (_i, el: HTMLElement) => stageCenterDelta(gsap, el, stageEl).x,
+            y: (_i, el: HTMLElement) => stageCenterDelta(gsap, el, stageEl).y,
+            autoAlpha: 0,
+            scale: 0.3,
           },
-          { x: 0, y: 0, autoAlpha: 1, scale: 1, duration: 0.9, stagger: 0.12, ease: 'back.out(1.15)' },
-          1,
+          { x: 0, y: 0, autoAlpha: 1, scale: 1, duration: 0.95, stagger: 0.1, ease: 'back.out(1.2)' },
+          0.1,
         )
-        // Stage 3 — verified product information, animated text reveals
-        .to(q('.sbg-3'), { autoAlpha: 1, duration: 0.8 }, 2)
-        .to(ingTxt, { autoAlpha: 1, y: 0, clipPath: 'inset(0 0 0% 0)', duration: 0.6, stagger: 0.12 }, 2.05)
-        .to(claims, { autoAlpha: 1, y: 0, duration: 0.45, stagger: 0.08 }, 2.35)
-        // Stage 4 — product settles beside the purchase CTA
-        .to([q('.s-ings'), q('.s-claims')], { autoAlpha: 0, scale: 0.94, duration: 0.55, ease: 'power2.in' }, 3.15)
-        .to(q('.sbg-2, .sbg-3'), { autoAlpha: 0, duration: 0.6 }, 3.15)
-        .to(q('.s-fig'), { x: () => -stageEl.offsetWidth * 0.2, duration: 0.8, ease: 'power3.inOut' }, 3.2)
-        .to(q('.s-cta'), { autoAlpha: 1, x: 0, duration: 0.7 }, 3.45)
-        .to({}, { duration: 0.35 }); // short hold so the CTA is readable before unpin
+        // Stage 3 — Verified product information & formula claims reveal
+        .to(q('.sbg-3'), { autoAlpha: 1, duration: 0.8 }, 1.15)
+        .to(ingTxt, { autoAlpha: 1, y: 0, clipPath: 'inset(0 0 0% 0)', duration: 0.6, stagger: 0.1 }, 1.2)
+        .to(claims, { autoAlpha: 1, y: 0, duration: 0.45, stagger: 0.07 }, 1.5)
+        // Stage 4 — Product settles beside the purchase CTA
+        .to([q('.s-ings'), q('.s-claims')], { autoAlpha: 0, scale: 0.94, duration: 0.55, ease: 'power2.in' }, 2.35)
+        .to(q('.sbg-2, .sbg-3'), { autoAlpha: 0, duration: 0.6 }, 2.35)
+        .to(fig, { x: () => -stageEl.offsetWidth * 0.22, scale: 1, duration: 0.85, ease: 'power3.inOut' }, 2.4)
+        .to(cta, { autoAlpha: 1, x: 0, duration: 0.7 }, 2.65)
+        .to({}, { duration: 0.4 }); // short hold so the CTA is readable before unpin
 
+      requestAnimationFrame(() => ScrollTrigger.refresh());
       return () => root.classList.remove('is-pinned');
     });
 
-    // Non-pinned layouts: simple, readable staggered reveals
-    mm.add('(max-width: 899px)', () => {
-      const items = q('.ing, .s-claims li');
-      gsap.from(items, { autoAlpha: 0, y: 22, duration: 0.6, stagger: 0.07, scrollTrigger: { trigger: q('.s-ings')[0], start: 'top 85%', once: true } });
+    // Mobile layouts: scrubbed depth + staggered scroll reveals without touch scroll-jacking
+    mm.add('(max-width: 767px)', () => {
+      const lines = q('.s-title .ml-i');
+      const headMeta = q('.s-head .eyebrow, .s-sub');
+      const figIn = q('.s-fig-in');
+      const ings = q('.ing');
+      const claims = q('.s-claims li');
+      const cta = q('.s-cta');
+
+      gsap.from(lines, {
+        yPercent: 115,
+        duration: 0.75,
+        ease: 'expo.out',
+        scrollTrigger: { trigger: q('.s-head')[0], start: 'top 86%' },
+      });
+      gsap.from(headMeta, {
+        autoAlpha: 0,
+        y: 14,
+        duration: 0.55,
+        stagger: 0.08,
+        scrollTrigger: { trigger: q('.s-head')[0], start: 'top 86%' },
+      });
+      gsap.fromTo(
+        figIn,
+        { scale: 0.88, y: 36 },
+        {
+          scale: 1,
+          y: 0,
+          ease: 'none',
+          scrollTrigger: { trigger: figIn[0], start: 'top 90%', end: 'center 55%', scrub: 0.4 },
+        },
+      );
+      gsap.from(ings, {
+        autoAlpha: 0,
+        y: 26,
+        scale: 0.96,
+        duration: 0.6,
+        stagger: 0.09,
+        ease: 'power2.out',
+        scrollTrigger: { trigger: q('.s-ings')[0], start: 'top 85%' },
+      });
+      gsap.from(claims, {
+        autoAlpha: 0,
+        y: 14,
+        duration: 0.45,
+        stagger: 0.06,
+        scrollTrigger: { trigger: q('.s-claims')[0], start: 'top 88%' },
+      });
+      gsap.from(cta, {
+        autoAlpha: 0,
+        y: 28,
+        duration: 0.65,
+        ease: 'power2.out',
+        scrollTrigger: { trigger: cta[0], start: 'top 88%' },
+      });
     });
 
     this.destroyRef.onDestroy(() => {
@@ -205,9 +280,14 @@ export class StoryComponent {
   }
 }
 
-function centerDelta(el: HTMLElement, center: Element) {
+function stageCenterDelta(gsap: { getProperty(target: object, property: string): string | number }, el: HTMLElement, stageEl: HTMLElement) {
   const a = el.getBoundingClientRect();
-  const b = center.getBoundingClientRect();
-  return { x: b.left + b.width / 2 - (a.left + a.width / 2), y: b.top + b.height / 2 - (a.top + a.height / 2) };
+  const b = stageEl.getBoundingClientRect();
+  const tx = Number(gsap.getProperty(el, 'x')) || 0;
+  const ty = Number(gsap.getProperty(el, 'y')) || 0;
+  return {
+    x: b.left + b.width / 2 - (a.left + a.width / 2 - tx),
+    y: b.top + b.height / 2 - (a.top + a.height / 2 - ty),
+  };
 }
 
