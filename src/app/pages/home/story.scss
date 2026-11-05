@@ -156,30 +156,34 @@
   padding: 0;
   .s-pin {
     height: 100svh;
-    display: grid;
-    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     overflow: hidden;
   }
   .s-wrap {
     height: 100%;
-    grid-template-rows: auto 1fr;
-    padding-top: calc(var(--header-h) + 20px);
-    padding-bottom: 36px;
-    gap: 8px;
+    max-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    padding-top: calc(var(--header-h) + 16px);
+    padding-bottom: 28px;
+    gap: 16px;
   }
   .s-title {
     font-size: clamp(2rem, 3.6vw, 3.8rem);
   }
   .s-stage {
     position: relative;
-    display: block;
-    min-height: 0;
+    flex: 1;
+    width: 100%;
+    min-height: 480px;
   }
   .s-fig {
     position: absolute;
     left: 50%;
     top: 50%;
-    width: min(26vw, 46svh);
+    width: min(26vw, 44svh);
     translate: -50% -50%;
     z-index: 2;
   }
