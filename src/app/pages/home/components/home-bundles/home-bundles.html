@@ -1,0 +1,21 @@
+<section class="bd" aria-labelledby="bd-title">
+  <span class="orb orb--pink bd-orb" dFloat [floatAmp]="14" [floatDuration]="8" aria-hidden="true"></span>
+  <div class="container">
+    <header class="bd-head">
+      <div>
+        <p class="eyebrow" dReveal>Paket hemat</p>
+        <h2 id="bd-title" dMask>
+          <span class="ml"><span class="ml-i">Spesial bundling</span></span>
+        </h2>
+      </div>
+      <a routerLink="/belanja" [queryParams]="{ kategori: 'bundle' }" class="btn btn--soft btn--sm" dMagnetic>
+        <span class="btn-label">Semua bundling <app-icon name="arrow-right" [size]="18" /></span>
+      </a>
+    </header>
+    <div class="bd-grid" dStagger staggerSelector=".bd-item" [staggerStep]="0.1" [staggerY]="34">
+      @for (p of bundles; track p.id) {
+        <div class="bd-item"><app-product-card [product]="p" /></div>
+      }
+    </div>
+  </div>
+</section>

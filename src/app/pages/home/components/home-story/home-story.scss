@@ -1,0 +1,285 @@
+@use '../../../../../styles/tokens' as *;
+
+.story {
+  position: relative;
+  padding: clamp(60px, 8vw, 120px) 0;
+  background: transparent;
+}
+.s-pin {
+  position: relative;
+}
+.s-bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  border-radius: 0;
+}
+.sbg {
+  position: absolute;
+  inset: 0;
+}
+.sbg-1 {
+  background: radial-gradient(70% 70% at 50% 40%, #fde6dd, #fbd9d8 70%);
+}
+.sbg-2 {
+  background: radial-gradient(70% 70% at 50% 40%, #fbd2cc, #f6bfc9 75%);
+}
+.sbg-3 {
+  background: radial-gradient(70% 70% at 50% 40%, #e9f0fa, #cfe0f3 75%);
+}
+.story:not(.is-pinned) {
+  .sbg-2,
+  .sbg-3 {
+    display: none;
+  }
+}
+
+.s-wrap {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: clamp(28px, 4vw, 56px);
+  padding-block: clamp(20px, 4vw, 60px);
+}
+.s-head {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  text-align: center;
+}
+.s-title {
+  font-size: clamp(2rem, 4.6vw + 0.4rem, 4.6rem);
+}
+.s-sub {
+  font-size: 1.1rem;
+  color: var(--ink);
+}
+
+// ── Default (stacked, fully visible): mobile, tablets, reduced-motion, lite devices ──
+.s-stage {
+  display: grid;
+  gap: 28px;
+  justify-items: center;
+}
+.s-fig {
+  width: min(78vw, 380px);
+}
+.s-fig-in {
+  border-radius: var(--radius-l);
+  overflow: hidden;
+  box-shadow: var(--shadow-lift);
+  background: var(--blush);
+}
+.s-ings {
+  display: grid;
+  gap: 14px;
+  width: 100%;
+  max-width: 640px;
+  @include up($bp-sm) {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+.ing {
+  display: grid;
+  grid-template-columns: 76px 1fr;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 16px 12px 12px;
+  border-radius: var(--radius-m);
+  background: rgba(255, 255, 255, 0.78);
+}
+.ing-img {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 10px 20px -10px rgba(174, 98, 91, 0.5);
+}
+.ing-txt {
+  h3 {
+    font-size: 0.98rem;
+    line-height: 1.15;
+  }
+  p {
+    margin-top: 4px;
+    font-size: 0.9rem;
+    line-height: 1.35;
+  }
+}
+.s-claims {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  li {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border-radius: var(--radius-pill);
+    background: #fff;
+    color: var(--brown);
+    font-weight: 500;
+    font-size: 0.9rem;
+  }
+}
+.s-cta {
+  display: grid;
+  gap: 8px;
+  justify-items: start;
+  width: min(100%, 460px);
+  padding: 28px;
+  border-radius: var(--radius-l);
+  background: #fff;
+  box-shadow: var(--shadow-lift);
+  h3 {
+    font-size: 1.9rem;
+  }
+}
+.s-meta {
+  font-size: 0.88rem;
+  color: var(--ink-soft);
+}
+.s-price {
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+.s-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+// ── Pinned scene layout (desktop & tablet, motion allowed — scales fluidly across any viewport height) ──
+.story.is-pinned {
+  padding: 0;
+  .s-pin {
+    height: 100svh;
+    min-height: 420px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .s-wrap {
+    flex: 1 1 auto;
+    min-height: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding-top: clamp(74px, 11svh, calc(var(--header-h) + 14px));
+    padding-bottom: clamp(12px, 3svh, 28px);
+    gap: clamp(8px, 1.8svh, 18px);
+  }
+  .s-head {
+    flex: 0 0 auto;
+    gap: clamp(4px, 1svh, 10px);
+  }
+  .s-title {
+    font-size: clamp(1.65rem, min(3.6vw, 5.8svh), 3.8rem);
+  }
+  .s-sub {
+    font-size: clamp(0.9rem, 2.1svh, 1.1rem);
+  }
+  .s-stage {
+    position: relative;
+    flex: 1 1 auto;
+    min-height: 0;
+    width: 100%;
+  }
+  .s-fig {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: clamp(168px, min(26vw, 44svh), 380px);
+    z-index: 2;
+    will-change: transform;
+  }
+  .s-fig-in {
+    will-change: transform, opacity;
+  }
+  .s-ings {
+    position: absolute;
+    inset: 0;
+    display: block;
+    max-width: none;
+    z-index: 1;
+    pointer-events: none;
+  }
+  .ing {
+    position: absolute;
+    width: min(28%, 290px);
+    grid-template-columns: auto;
+    justify-items: center;
+    text-align: center;
+    background: transparent;
+    padding: 0;
+    gap: clamp(6px, 1.2svh, 10px);
+  }
+  .ing-img {
+    width: clamp(56px, min(8.5vw, 13svh), 120px);
+    height: clamp(56px, min(8.5vw, 13svh), 120px);
+    will-change: transform, opacity;
+  }
+  .ing-txt {
+    padding: clamp(6px, 1.2svh, 10px) clamp(10px, 1.2vw, 14px);
+    border-radius: var(--radius-m);
+    background: rgba(255, 255, 255, 0.86);
+    will-change: transform, opacity, clip-path;
+    h3 {
+      font-size: clamp(0.8rem, 1.7svh, 0.98rem);
+    }
+    p {
+      font-size: clamp(0.74rem, 1.45svh, 0.88rem);
+    }
+  }
+  .ing-0 {
+    left: 2%;
+    top: 2%;
+  }
+  .ing-1 {
+    right: 2%;
+    top: 2%;
+  }
+  .ing-2 {
+    left: 2%;
+    bottom: 11%;
+  }
+  .ing-3 {
+    right: 2%;
+    bottom: 11%;
+  }
+  .s-claims {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+    z-index: 3;
+    width: min(100%, 820px);
+    gap: clamp(6px, 1svh, 8px);
+    pointer-events: none;
+    li {
+      padding: clamp(5px, 0.9svh, 8px) clamp(10px, 1.2vw, 14px);
+      font-size: clamp(0.78rem, 1.5svh, 0.9rem);
+    }
+  }
+  .s-cta {
+    position: absolute;
+    right: 3%;
+    top: 50%;
+    width: min(44%, 440px);
+    padding: clamp(16px, 3svh, 28px);
+    gap: clamp(4px, 1svh, 8px);
+    z-index: 3;
+    will-change: transform, opacity;
+    h3 {
+      font-size: clamp(1.25rem, min(2.4vw, 3.4svh), 1.9rem);
+    }
+    .s-price {
+      font-size: clamp(1.2rem, 2.8svh, 1.6rem);
+    }
+  }
+}

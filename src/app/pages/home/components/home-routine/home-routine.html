@@ -1,0 +1,94 @@
+<app-curve fill="var(--rt-bg)" [shape]="2" />
+<section id="rutinitas" class="rt" aria-labelledby="rt-title" [style.--rt-accent]="step().accent" data-bg="#FFF4EE">
+  <span class="orb orb--pink rt-orb rt-orb1" dFloat [floatAmp]="16" [floatDuration]="8" aria-hidden="true"></span>
+  <span class="orb orb--blue rt-orb rt-orb2" dFloat [floatAmp]="12" aria-hidden="true"></span>
+
+  <div class="container">
+    <header class="rt-head">
+      <p class="eyebrow" dReveal>Rutinitas harian</p>
+      <h2 id="rt-title" dMask>
+        <span class="ml"><span class="ml-i">Dari mandi sampai</span></span>
+        <span class="ml"><span class="ml-i">siap bermain</span></span>
+      </h2>
+      <p class="rt-lead" dWords>Empat langkah lembut yang membuat hari Si Kecil dimulai dengan nyaman.</p>
+    </header>
+
+    <div class="rt-progress" aria-hidden="true">
+      <span class="rt-count">Langkah {{ active() + 1 }} / {{ steps.length }}</span>
+      <span class="rt-track"><span class="rt-fill" [style.transform]="'scaleX(' + (active() + 1) / steps.length + ')'"></span></span>
+    </div>
+
+    <div class="rt-tabs" role="tablist" aria-label="Langkah rutinitas" (keydown)="onKey($event)">
+      @for (s of steps; track s.id; let i = $index) {
+        <button
+          type="button"
+          role="tab"
+          class="rt-tab"
+          [id]="'tab-' + s.id"
+          [attr.aria-selected]="active() === i"
+          [attr.aria-controls]="'panel-' + s.id"
+          [tabindex]="active() === i ? 0 : -1"
+          [class.is-active]="active() === i"
+          [class.is-done]="i < active()"
+          (click)="go(i)"
+        >
+          <span class="rt-tab-n">{{ s.n }}</span>
+          <span class="rt-tab-t">{{ s.title }}</span>
+        </button>
+      }
+    </div>
+
+    <div class="rt-body" (pointerdown)="swipeStart($event)" (pointerup)="swipeEnd($event)" (pointercancel)="swipeId = -1">
+      <div class="rt-scene" aria-hidden="false">
+        <span class="rt-blob"></span>
+        <div class="rt-frame">
+          @for (s of steps; track s.id; let i = $index) {
+            <img
+              class="rt-img"
+              [class.is-active]="active() === i"
+              [src]="'img/' + s.img"
+              width="760"
+              height="724"
+              [alt]="active() === i ? s.alt : ''"
+              [attr.aria-hidden]="active() === i ? null : 'true'"
+              [attr.loading]="i === 0 ? 'eager' : 'lazy'"
+              decoding="async"
+              draggable="false"
+            />
+          }
+        </div>
+        <span class="orb orb--salmon rt-sorb" style="--s: 70px" dFloat [floatAmp]="10" aria-hidden="true"></span>
+        <div class="rt-nav">
+          <button type="button" (click)="go(active() - 1)" [disabled]="active() === 0" aria-label="Langkah sebelumnya"><app-icon name="arrow-left" [size]="20" /></button>
+          <button type="button" (click)="go(active() + 1)" [disabled]="active() === steps.length - 1" aria-label="Langkah berikutnya"><app-icon name="arrow-right" [size]="20" /></button>
+        </div>
+      </div>
+
+      <div class="rt-panels">
+        @for (s of steps; track s.id; let i = $index) {
+          <div class="rt-panel" role="tabpanel" [id]="'panel-' + s.id" [attr.aria-labelledby]="'tab-' + s.id" [hidden]="active() !== i" [attr.tabindex]="active() === i ? 0 : null">
+            <span class="rt-big" aria-hidden="true">{{ s.n }}</span>
+            <h3>{{ s.title }}</h3>
+            <p class="rt-text">{{ s.text }}</p>
+            <h4 class="rt-reco-h">Rekomendasi produk</h4>
+            <ul class="rt-reco">
+              @for (p of recos(i); track p.id) {
+                <li class="reco">
+                  <a class="reco-img" [routerLink]="['/produk', p.handle]" tabindex="-1" aria-hidden="true"><app-pimg [src]="p.images[0]" sizes="76px" /></a>
+                  <div class="reco-txt">
+                    <a [routerLink]="['/produk', p.handle]">{{ p.name }}</a>
+                    <span>{{ p.variants[0].price | idr }}</span>
+                  </div>
+                  <button type="button" class="reco-add" [class.is-added]="cart.lastAdded() === p.variants[0].id" (click)="add(p)" [attr.aria-label]="'Tambah ' + p.name + ' ke keranjang'">
+                    <app-icon [name]="cart.lastAdded() === p.variants[0].id ? 'check' : 'plus'" [size]="20" [stroke]="2.6" />
+                  </button>
+                </li>
+              }
+            </ul>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</section>
+<app-curve fill="#FDEDF1" [shape]="3" />

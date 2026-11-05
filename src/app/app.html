@@ -1,0 +1,8 @@
+<a class="skip-link" href="#main" (click)="skip($event)">Lewati ke konten utama</a>
+<app-preloader />
+<app-header />
+<main id="main" #main tabindex="-1"><router-outlet /></main>
+<app-footer />
+<app-cart-drawer />
+<app-toasts />
+<p class="sr-only" role="status" aria-live="polite">{{ announce() }}</p>

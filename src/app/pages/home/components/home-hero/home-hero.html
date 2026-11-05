@@ -1,0 +1,73 @@
+<section class="hero" #root aria-labelledby="hero-title" data-bg="#FFF4EE">
+  <div class="hero-bg" aria-hidden="true">
+    <div class="hero-grad" data-h-bg></div>
+    <div class="layer" data-speed="140" style="left: -6%; top: 12%">
+      <div class="layer-in" data-depth="26"><span class="blob hb1"></span></div>
+    </div>
+    <div class="layer" data-speed="220" style="left: 7%; top: 64%">
+      <div class="layer-in" data-depth="-34"><span class="orb orb--blue h-orb" style="--s: 54px" dFloat [floatAmp]="14"></span></div>
+    </div>
+    <div class="layer" data-speed="260" style="right: 4%; top: 18%">
+      <div class="layer-in" data-depth="42"><span class="orb orb--pink h-orb" style="--s: 92px" dFloat [floatAmp]="18" [floatDuration]="7"></span></div>
+    </div>
+    <div class="layer" data-speed="180" style="left: 46%; top: 8%">
+      <div class="layer-in" data-depth="-22"><span class="orb orb--salmon orb--drop h-orb" style="--s: 38px" dFloat [floatAmp]="10"></span></div>
+    </div>
+    <div class="layer" data-speed="120" style="right: 12%; bottom: 14%">
+      <div class="layer-in" data-depth="30"><span class="cloud h-orb" style="--s: 260px" dFloat [floatAmp]="8" [floatRotate]="0.5" [floatDuration]="9"></span></div>
+    </div>
+  </div>
+
+  <div class="hero-grid container">
+    <div class="hero-copy" #copy>
+      <p class="eyebrow hero-eyebrow" data-h>Perawatan bayi &amp; anak</p>
+      <h1 id="hero-title" class="hero-title" #title data-mask>
+        <span class="ml"><span class="ml-i">Sentuhan Lembut</span></span>
+        <span class="ml"><span class="ml-i">untuk Setiap Momen</span></span>
+        <span class="ml"><span class="ml-i hl">Si Kecil</span></span>
+      </h1>
+      <p class="hero-lead" data-h>
+        Rangkaian gentle care dengan natural active ingredients dan formula lembut, tanpa bahan berbahaya — cocok untuk Bunda dan Si Kecil sejak hari pertama.
+      </p>
+      <div class="hero-cta">
+        <a routerLink="/belanja" class="btn" dMagnetic data-h-cta><span class="btn-label">Belanja Sekarang <app-icon name="arrow-right" /></span></a>
+        <a routerLink="/" fragment="rutinitas" class="btn btn--soft" dMagnetic data-h-cta><span class="btn-label">Lihat Rutinitas</span></a>
+      </div>
+      <ul class="hero-cats" aria-label="Belanja per kategori" data-h>
+        <li><a routerLink="/belanja" [queryParams]="{ kategori: 'bath' }">Mandi</a></li>
+        <li><a routerLink="/belanja" [queryParams]="{ kategori: 'hair' }">Rambut</a></li>
+        <li><a routerLink="/belanja" [queryParams]="{ kategori: 'skin' }">Kulit</a></li>
+        <li><a routerLink="/belanja" [queryParams]="{ kategori: 'bundle' }">Bundling</a></li>
+      </ul>
+    </div>
+
+    <div class="hero-visual" #visual>
+      <span class="hv-circle" #circle aria-hidden="true"></span>
+      <div class="hv-frame" #frame>
+        <img
+          #img
+          src="img/hero-mother-toddler.webp"
+          width="570"
+          height="650"
+          fetchpriority="high"
+          decoding="async"
+          alt="Bunda tersenyum bersama balita sambil memegang DODORA Body Bath"
+        />
+      </div>
+
+      @if (feature(); as p) {
+        <a class="hv-product" [routerLink]="['/produk', p.handle]" (click)="mark($event)" data-h-chip>
+          <span class="hvp-img" #pimg><app-pimg [src]="p.images[1] ?? p.images[0]" [alt]="''" sizes="96px" [eager]="true" /></span>
+          <span class="hvp-txt">
+            <small>Best seller</small>
+            <strong>{{ p.name }}</strong>
+            <span>{{ p.variants[0].price | idr }}</span>
+          </span>
+          <button type="button" class="hvp-add" (click)="add($event)" [attr.aria-label]="'Tambah ' + p.name + ' ke keranjang'">
+            <app-icon name="plus" [size]="20" [stroke]="2.6" />
+          </button>
+        </a>
+      }
+    </div>
+  </div>
+</section>

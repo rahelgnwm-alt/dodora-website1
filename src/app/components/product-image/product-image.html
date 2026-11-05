@@ -1,0 +1,12 @@
+<img
+  [src]="url()"
+  [attr.srcset]="srcset()"
+  [attr.sizes]="sizes()"
+  [alt]="alt()"
+  width="800"
+  height="800"
+  [attr.loading]="eager() ? 'eager' : 'lazy'"
+  [attr.fetchpriority]="eager() ? 'high' : null"
+  decoding="async"
+  draggable="false"
+/>

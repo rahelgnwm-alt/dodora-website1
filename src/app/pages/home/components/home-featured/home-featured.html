@@ -1,0 +1,30 @@
+<section class="feat" #root aria-labelledby="feat-title" data-bg="#FFEFE7">
+  <div class="container">
+    <header class="feat-head">
+      <div>
+        <p class="eyebrow" dReveal>Favorit Bunda</p>
+        <h2 id="feat-title" dMask>
+          <span class="ml"><span class="ml-i">Rangkaian mandi &amp;</span></span>
+          <span class="ml"><span class="ml-i">perawatan harian</span></span>
+        </h2>
+      </div>
+      <div class="feat-side">
+        <p dWords>Formula lembut untuk mandi, rambut, dan kulit Si Kecil — pilih yang paling dibutuhkan hari ini.</p>
+        <a routerLink="/belanja" class="btn btn--soft btn--sm" dMagnetic><span class="btn-label">Lihat semua produk <app-icon name="arrow-right" [size]="18" /></span></a>
+      </div>
+    </header>
+
+    <div class="feat-stage" #stage>
+      <span class="orb orb--pink f-orb" style="--s: clamp(120px, 16vw, 220px); left: 4%; top: 6%" dFloat [floatAmp]="16" [floatDuration]="8"></span>
+      <span class="orb orb--blue f-orb" style="--s: clamp(60px, 8vw, 110px); right: 6%; top: 2%" dFloat [floatAmp]="14"></span>
+      <span class="f-ring f-circle" aria-hidden="true"></span>
+      <span class="orb orb--salmon orb--drop f-orb" style="--s: 44px; left: 49%; bottom: -2%" dFloat [floatAmp]="10"></span>
+
+      <div class="feat-grid">
+        @if (left(); as p) { <div class="fc fc-l" data-fc><app-product-card [product]="p" /></div> }
+        @if (center(); as p) { <div class="fc fc-c" data-fc><app-product-card [product]="p" size="lg" /></div> }
+        @if (right(); as p) { <div class="fc fc-r" data-fc><app-product-card [product]="p" /></div> }
+      </div>
+    </div>
+  </div>
+</section>

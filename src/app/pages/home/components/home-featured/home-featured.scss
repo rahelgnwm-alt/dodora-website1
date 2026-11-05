@@ -1,0 +1,80 @@
+@use '../../../../../styles/tokens' as *;
+
+.feat {
+  position: relative;
+  padding: clamp(40px, 6vw, 90px) 0 clamp(70px, 9vw, 130px);
+}
+.feat-head {
+  display: grid;
+  gap: 22px;
+  align-items: end;
+  margin-bottom: clamp(36px, 5vw, 64px);
+  @include up($bp-md) {
+    grid-template-columns: 1.2fr 1fr;
+    gap: 60px;
+  }
+  h2 {
+    margin-top: 14px;
+    font-size: clamp(1.9rem, 3.4vw + 0.4rem, 3.7rem);
+  }
+}
+.feat-side {
+  display: grid;
+  justify-items: start;
+  gap: 18px;
+  p {
+    max-width: 30em;
+  }
+}
+
+.feat-stage {
+  position: relative;
+}
+.f-orb {
+  z-index: 0;
+}
+.f-circle {
+  position: absolute;
+  z-index: 0;
+  left: 50%;
+  top: 46%;
+  width: min(86%, 760px);
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 50%, rgba(241, 176, 196, 0.5), rgba(241, 176, 196, 0.18) 62%, transparent 72%);
+  pointer-events: none;
+}
+.f-ring {
+  display: block;
+}
+
+.feat-grid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: clamp(14px, 2.4vw, 32px);
+  grid-template-columns: 1fr 1fr;
+  grid-template-areas:
+    'c c'
+    'l r';
+  align-items: stretch;
+  @include up($bp-md) {
+    grid-template-columns: 1fr 1.16fr 1fr;
+    grid-template-areas: 'l c r';
+    align-items: end;
+  }
+}
+.fc-l {
+  grid-area: l;
+}
+.fc-c {
+  grid-area: c;
+  @include up($bp-md) {
+    margin-bottom: clamp(24px, 3vw, 48px);
+  }
+}
+.fc-r {
+  grid-area: r;
+}
+

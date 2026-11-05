@@ -1,0 +1,45 @@
+@use '../../../../../styles/tokens' as *;
+
+.trust {
+  position: relative;
+  padding: clamp(10px, 2vw, 24px) 0 clamp(56px, 7vw, 96px);
+  background: transparent;
+}
+.trust-grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: 1fr;
+  @include up($bp-sm) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  @include up($bp-lg) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+.t-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 20px 14px 14px;
+  border-radius: var(--radius-pill);
+  background: #fff;
+  box-shadow: var(--shadow-soft);
+  img {
+    flex: none;
+    width: 64px;
+    height: 64px;
+  }
+  div {
+    display: grid;
+    line-height: 1.2;
+  }
+  strong {
+    color: var(--brown);
+    font-size: 1rem;
+  }
+  span {
+    color: var(--ink-soft);
+    font-size: 0.86rem;
+  }
+}
+

@@ -1,0 +1,13 @@
+section {
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 18px;
+  min-height: 80svh;
+  padding: 120px var(--gutter) 60px;
+  text-align: center;
+}
+
+h1 {
+  font-size: clamp(2.4rem, 7vw, 5rem);
+}

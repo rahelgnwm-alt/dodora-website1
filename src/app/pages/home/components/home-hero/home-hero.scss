@@ -1,0 +1,234 @@
+@use '../../../../../styles/tokens' as *;
+
+:host {
+  display: block;
+}
+
+// Content hidden only after GSAP primed it (is-primed) — never if JS/GSAP is unavailable.
+.hero {
+  position: relative;
+  min-height: 100svh;
+  display: grid;
+  align-items: center;
+  padding: calc(var(--header-h) + 56px) 0 clamp(70px, 9vw, 130px);
+  overflow: clip;
+  background: var(--cream);
+}
+
+// Pre-JS hidden state (only when motion is enabled and GSAP hasn't primed yet — the preloader covers this).
+:host-context(html.motion) .hero:not(.is-primed) {
+  [data-h],
+  [data-h-cta],
+  [data-h-chip],
+  [data-h-bg],
+  .h-orb,
+  .hv-circle {
+    opacity: 0;
+  }
+  .hv-frame {
+    clip-path: circle(0% at 50% 62%);
+  }
+}
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.hero-grad {
+  position: absolute;
+  inset: -10% -5% 0;
+  background:
+    radial-gradient(60% 55% at 82% 38%, rgba(241, 176, 196, 0.55), transparent 70%),
+    radial-gradient(50% 50% at 8% 80%, rgba(137, 174, 219, 0.28), transparent 70%),
+    radial-gradient(45% 45% at 40% 0%, rgba(247, 156, 138, 0.3), transparent 70%);
+}
+.layer {
+  position: absolute;
+  will-change: transform;
+  transform: translateZ(0);
+}
+.layer-in {
+  will-change: transform;
+  transform: translateZ(0);
+}
+.hb1 {
+  width: clamp(220px, 28vw, 420px);
+  aspect-ratio: 1;
+  --blob-bg: radial-gradient(circle at 35% 30%, rgba(247, 156, 138, 0.32), rgba(241, 176, 196, 0.16));
+  position: relative;
+}
+.h-orb {
+  position: relative;
+}
+
+.hero-grid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: clamp(28px, 5vw, 70px);
+  align-items: center;
+  @include up($bp-md) {
+    grid-template-columns: 1.08fr 1fr;
+  }
+}
+
+.hero-copy {
+  display: grid;
+  justify-items: start;
+  gap: clamp(16px, 2vw, 26px);
+  will-change: transform, opacity;
+}
+.hero-title {
+  font-size: clamp(2.05rem, 4.05vw + 0.4rem, 4.45rem);
+  line-height: 1.02;
+  letter-spacing: 0.005em;
+  .hl {
+    color: var(--salmon);
+    // salmon on cream is decorative-large only; text-shadow keeps edge crisp
+    -webkit-text-stroke: 0;
+  }
+}
+.hero-lead {
+  max-width: 34em;
+  font-size: clamp(1.02rem, 1.1vw + 0.7rem, 1.22rem);
+  color: var(--ink);
+}
+.hero-cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 6px;
+}
+.hero-cats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+    padding: 0 16px;
+    border-radius: var(--radius-pill);
+    border: 2px solid rgba(174, 98, 91, 0.22);
+    font-weight: 500;
+    font-size: 0.92rem;
+    color: var(--brown);
+    transition:
+      background-color var(--dur-hover) var(--ease-out),
+      border-color var(--dur-hover) var(--ease-out),
+      transform var(--dur-button) var(--ease-spring);
+    @include hover-capable {
+      &:hover {
+        background: var(--pink);
+        border-color: var(--pink);
+        transform: translateY(-2px);
+      }
+    }
+  }
+}
+
+// ── Visual ──
+.hero-visual {
+  position: relative;
+  justify-self: center;
+  width: min(100%, 560px);
+  aspect-ratio: 570 / 650;
+  will-change: transform;
+}
+.hv-circle {
+  position: absolute;
+  inset: -7% -9% -4% -4%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 32% 28%, #fbc3b6, var(--salmon) 58%, #f08d7c);
+  opacity: 0.9;
+  will-change: transform;
+}
+.hv-frame {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  // organic, asymmetric mask
+  border-radius: 46% 54% 42% 58% / 36% 38% 62% 64%;
+  box-shadow: 0 40px 80px -36px rgba(174, 98, 91, 0.6);
+  background: var(--blush);
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    will-change: transform;
+  }
+}
+.hv-product {
+  position: absolute;
+  z-index: 3;
+  left: -4%;
+  bottom: 4%;
+  display: grid;
+  grid-template-columns: 70px 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px 10px 10px;
+  max-width: min(320px, 90%);
+  border-radius: var(--radius-l);
+  background: rgba(255, 250, 247, 0.92);
+  box-shadow: var(--shadow-lift);
+  transition:
+    transform var(--dur-hover) var(--ease-out),
+    box-shadow var(--dur-card) var(--ease-out);
+  @supports (backdrop-filter: blur(1px)) {
+    backdrop-filter: blur(10px);
+  }
+  @include hover-capable {
+    &:hover {
+      transform: translateY(-4px);
+    }
+  }
+  @include down($bp-sm) {
+    left: 0;
+    bottom: -4%;
+    grid-template-columns: 56px 1fr auto;
+  }
+}
+.hvp-img {
+  display: block;
+  overflow: hidden;
+  border-radius: 20px;
+}
+.hvp-txt {
+  display: grid;
+  line-height: 1.2;
+  small {
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  strong {
+    font-size: 1rem;
+    color: var(--brown);
+  }
+  span {
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+}
+.hvp-add {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--brown);
+  color: #fff;
+  transition: transform var(--dur-button) var(--ease-spring);
+  &:active {
+    transform: scale(0.88);
+  }
+  @include hover-capable {
+    &:hover {
+      transform: rotate(90deg) scale(1.06);
+    }
+  }
+}

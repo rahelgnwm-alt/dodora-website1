@@ -2,33 +2,19 @@ import { ChangeDetectionStrategy, Component, ElementRef, inject, signal, viewChi
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { filter } from 'rxjs';
-import { CartDrawerComponent } from './shell/cart-drawer';
-import { FooterComponent } from './shell/footer';
-import { HeaderComponent } from './shell/header';
-import { PreloaderComponent } from './shell/preloader';
-import { ToastsComponent } from './ui/toasts';
+import { CartDrawer } from './components/cart-drawer/cart-drawer';
+import { Footer } from './components/footer/footer';
+import { Header } from './components/header/header';
+import { Preloader } from './components/preloader/preloader';
+import { Toasts } from './components/toasts/toasts';
 import { pageTransition } from './motion/utilities';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, HeaderComponent, FooterComponent, CartDrawerComponent, PreloaderComponent, ToastsComponent],
+  imports: [RouterOutlet, Header, Footer, CartDrawer, Preloader, Toasts],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `
-    <a class="skip-link" href="#main" (click)="skip($event)">Lewati ke konten utama</a>
-    <app-preloader />
-    <app-header />
-    <main id="main" #main tabindex="-1"><router-outlet /></main>
-    <app-footer />
-    <app-cart-drawer />
-    <app-toasts />
-    <p class="sr-only" role="status" aria-live="polite">{{ announce() }}</p>
-  `,
-  styles: `
-    main {
-      outline: 0;
-      min-height: 100svh;
-    }
-  `,
+  templateUrl: './app.html',
+  styleUrl: './app.scss',
 })
 export class App {
   private readonly router = inject(Router);

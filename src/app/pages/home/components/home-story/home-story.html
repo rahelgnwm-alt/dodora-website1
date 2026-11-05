@@ -1,0 +1,63 @@
+<section class="story" #root aria-labelledby="story-title" data-bg="#FBD9D8">
+  <div class="s-pin" #pin>
+    <div class="s-bg" aria-hidden="true">
+      <span class="sbg sbg-1"></span>
+      <span class="sbg sbg-2"></span>
+      <span class="sbg sbg-3"></span>
+      <span class="orb orb--pink" style="--s: 120px; left: 6%; top: 18%"></span>
+      <span class="orb orb--blue" style="--s: 66px; right: 9%; top: 12%"></span>
+      <span class="orb orb--salmon" style="--s: 90px; right: 14%; bottom: 10%"></span>
+    </div>
+
+    <div class="container s-wrap">
+      <header class="s-head">
+        <p class="eyebrow">Kenali lebih dekat</p>
+        <h2 id="story-title" class="s-title">
+          <span class="ml"><span class="ml-i">Gentle Hair Shampoo</span></span>
+        </h2>
+        <p class="s-sub">Membersihkan kulit kepala dengan lembut</p>
+      </header>
+
+      <div class="s-stage" #stage>
+        @if (p(); as prod) {
+          <div class="s-fig">
+            <div class="s-fig-in">
+              <app-pimg [src]="prod.images[0]" [alt]="prod.name + ' — kemasan produk'" sizes="(min-width: 768px) 30vw, 80vw" />
+            </div>
+          </div>
+        }
+
+        <ul class="s-ings" aria-label="Bahan aktif alami">
+          @for (ing of ingredients; track ing.name; let i = $index) {
+            <li class="ing" [class]="'ing ing-' + i">
+              <img class="ing-img" [src]="'img/' + ing.img" width="120" height="120" alt="" loading="lazy" decoding="async" />
+              <div class="ing-txt">
+                <h3>{{ ing.name }}</h3>
+                <p>{{ ing.benefit }}</p>
+              </div>
+            </li>
+          }
+        </ul>
+
+        <ul class="s-claims" aria-label="Klaim formula">
+          @for (c of claims; track c) {
+            <li><app-icon name="check" [size]="16" [stroke]="3" /> {{ c }}</li>
+          }
+        </ul>
+
+        @if (p(); as prod) {
+          <div class="s-cta">
+            <p class="eyebrow">Siap dibawa pulang</p>
+            <h3>{{ prod.name }}</h3>
+            <p class="s-meta">Netto {{ prod.netto[0] }} · BPOM {{ prod.bpom[0] }}</p>
+            <p class="s-price">{{ prod.variants[0].price | idr }}</p>
+            <div class="s-actions">
+              <button type="button" class="btn" dMagnetic (click)="add()"><span class="btn-label"><app-icon name="bag" /> Tambah ke keranjang</span></button>
+              <a class="btn btn--soft" dMagnetic [routerLink]="['/produk', prod.handle]"><span class="btn-label">Lihat detail</span></a>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</section>

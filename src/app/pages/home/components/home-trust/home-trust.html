@@ -1,0 +1,13 @@
+<section class="trust" aria-label="Keunggulan DODORA" data-bg="#FFF4EE">
+  <ul class="container trust-grid" dStagger [staggerStep]="0.09">
+    @for (t of items; track t.label) {
+      <li class="t-item">
+        <img [src]="'img/' + t.icon" width="64" height="64" alt="" loading="lazy" decoding="async" />
+        <div>
+          <strong>{{ t.label }}</strong>
+          <span>{{ t.note }}</span>
+        </div>
+      </li>
+    }
+  </ul>
+</section>
