@@ -349,14 +349,14 @@ export function pointerParallax(kit: GsapKit, root: HTMLElement, env: MotionEnv,
 export function scrollParallax(kit: GsapKit, trigger: HTMLElement, targets: HTMLElement[], env: MotionEnv): Disposer {
   if (env.reduced || env.lite) return noop;
   const { gsap } = kit;
-  const k = env.mobile ? 0.45 : 1;
+  const k = env.mobile ? 0.35 : 0.7;
   const ctx = gsap.context(() => {
     targets.forEach((el) => {
       const dist = parseFloat(el.dataset['speed'] ?? '60') * k;
       gsap.fromTo(
         el,
         { y: -dist * 0.5 },
-        { y: dist * 0.5, ease: 'none', scrollTrigger: { trigger, start: 'top bottom', end: 'bottom top', scrub: true } },
+        { y: dist * 0.5, ease: 'none', scrollTrigger: { trigger, start: 'top bottom', end: 'bottom top', scrub: 0.8 } },
       );
     });
   }, trigger);

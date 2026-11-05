@@ -177,10 +177,10 @@ export class HeroComponent {
       // ── Scroll-linked: layers drift at different speeds, copy leaves, product shifts on ──
       if (!env.lite) {
         const k = env.mobile ? 0.5 : 1;
-        const st = { trigger: root, start: 'top top', end: 'bottom top', scrub: true };
-        gsap.to(this.copy().nativeElement, { y: -70 * k, autoAlpha: 0.0, ease: 'none', scrollTrigger: { ...st, end: 'bottom 35%' } });
-        gsap.to(this.visual().nativeElement, { y: -90 * k, ease: 'none', scrollTrigger: st });
-        gsap.to(q('.hero-grad'), { yPercent: 18, ease: 'none', scrollTrigger: st });
+        const st = { trigger: root, start: 'top top', end: 'bottom top', scrub: 0.6 };
+        gsap.to(this.copy().nativeElement, { y: -50 * k, autoAlpha: 0, ease: 'power1.out', scrollTrigger: { ...st, end: 'bottom 45%' } });
+        gsap.to(this.visual().nativeElement, { y: -65 * k, ease: 'none', scrollTrigger: st });
+        gsap.to(q('.hero-grad'), { yPercent: 12, ease: 'none', scrollTrigger: st });
       }
     }, root);
 

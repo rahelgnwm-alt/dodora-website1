@@ -68,10 +68,20 @@ export class MotionService {
     if (!ENABLE_LENIS || !finePointer || lite || mobile) return;
     try {
       const { default: Lenis } = await import('lenis');
-      const lenis = new Lenis({ duration: 1.0, smoothWheel: true, anchors: false });
+      const lenis = new Lenis({
+        duration: 0.9,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        smoothWheel: true,
+        anchors: false,
+        wheelMultiplier: 0.95,
+      });
+
+      // Synchronize Lenis with GSAP ScrollTrigger
       lenis.on('scroll', kit.ScrollTrigger.update);
-      kit.gsap.ticker.add((t) => lenis.raf(t * 1000));
-      kit.gsap.ticker.lagSmoothing(0);
+      kit.gsap.ticker.add((time) => {
+        lenis.raf(time * 1000);
+      });
+      kit.gsap.ticker.lagSmoothing(500, 33);
       this.lenis = lenis;
     } catch {
       /* native scroll remains */

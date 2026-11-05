@@ -46,9 +46,11 @@
 .layer {
   position: absolute;
   will-change: transform;
+  transform: translateZ(0);
 }
 .layer-in {
   will-change: transform;
+  transform: translateZ(0);
 }
 .hb1 {
   width: clamp(220px, 28vw, 420px);

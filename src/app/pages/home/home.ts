@@ -51,13 +51,16 @@ export class HomePage {
     afterNextRender(async () => {
       const kit = await this.motion.whenKit();
       if (!kit || this.motion.env.reduced) return;
+
+      // Ensure ScrollTrigger positions are calculated accurately after layout stabilizes
+      setTimeout(() => kit.ScrollTrigger.refresh(), 120);
+
       // Gentle page-colour morph across the top group of sections (hero → trust → featured).
       const sections = Array.from(this.home().nativeElement.querySelectorAll<HTMLElement>('[data-bg]'));
       const dispose = backgroundMorph(kit, sections);
       // Re-align fragment scroll once ScrollTrigger pin spacers (e.g. StoryComponent) are in place.
       const frag = this.route.snapshot.fragment;
       if (frag) {
-        kit.ScrollTrigger.refresh();
         requestAnimationFrame(() => this.motion.scrollToId(frag));
       }
       this.destroyRef.onDestroy(() => {
