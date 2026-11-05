@@ -1,0 +1,366 @@
+@use 'styles/tokens' as *;
+@use '@fontsource-variable/fredoka/index.css';
+@use 'styles/orbs';
+
+// Registered so section colour transitions and SVG curve fills animate in lockstep.
+@property --rt-bg {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #fbdde6;
+}
+@property --page-bg {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #fff4ee;
+}
+
+:root {
+  --salmon: #{$salmon};
+  --pink: #{$pink};
+  --blue: #{$blue};
+  --brown: #{$brown};
+  --cream: #{$cream};
+  --cream-deep: #{$cream-deep};
+  --blush: #{$blush};
+  --ink: #{$ink};
+  --ink-soft: #{$ink-soft};
+  --white: #fff;
+
+  // Motion tokens (mirrored in src/app/motion/motion.tokens.ts)
+  --dur-hover: 220ms;
+  --dur-button: 300ms;
+  --dur-card: 560ms;
+  --dur-headline: 780ms;
+  --dur-section: 900ms;
+  --dur-page: 560ms;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-inout: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-spring: cubic-bezier(0.34, 1.35, 0.5, 1);
+  @supports (transition-timing-function: linear(0, 1)) {
+    --ease-spring: linear(
+      0,
+      0.18 4%,
+      0.52 10%,
+      0.82 17%,
+      1.02 24%,
+      1.08 29%,
+      1.07 34%,
+      1.03 41%,
+      0.995 50%,
+      0.99 58%,
+      1 70%,
+      1
+    );
+  }
+
+  --radius-s: 14px;
+  --radius-m: 24px;
+  --radius-l: 36px;
+  --radius-pill: 999px;
+
+  --shadow-soft: 0 10px 30px -12px rgba(174, 98, 91, 0.25);
+  --shadow-lift: 0 26px 50px -18px rgba(174, 98, 91, 0.38);
+
+  --header-h: 84px;
+  --gutter: clamp(20px, 5vw, 72px);
+  --maxw: 1320px;
+
+  @include down($bp-md) {
+    --header-h: 68px;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-padding-top: calc(var(--header-h) + 16px);
+  &.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+  &.lenis-stopped {
+    overflow: clip;
+  }
+}
+
+body {
+  margin: 0;
+  font-family: 'Fredoka Variable', 'Fredoka', ui-rounded, 'Nunito', system-ui, sans-serif;
+  font-weight: 400;
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  color: var(--ink);
+  background: var(--page-bg, var(--cream));
+  overflow-x: clip;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-weight: 700;
+  line-height: 1.04;
+  margin: 0;
+  color: var(--brown);
+  text-transform: uppercase; // Brand: headlines in capital letters (Fredoka Bold)
+  letter-spacing: 0.005em;
+  text-wrap: balance;
+}
+p {
+  margin: 0;
+  text-wrap: pretty;
+}
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+a {
+  color: inherit;
+  text-decoration: none;
+}
+button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+:focus-visible {
+  outline: 3px solid var(--blue);
+  outline-offset: 3px;
+  border-radius: 8px;
+}
+
+::selection {
+  background: var(--pink);
+  color: var(--ink);
+}
+
+.sr-only {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.skip-link {
+  position: fixed;
+  left: 16px;
+  top: -80px;
+  z-index: 1000;
+  padding: 12px 20px;
+  background: var(--brown);
+  color: #fff;
+  border-radius: var(--radius-pill);
+  transition: top var(--dur-hover) var(--ease-out);
+  &:focus {
+    top: 16px;
+  }
+}
+
+.container {
+  width: 100%;
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+// Section label: letter-spacing transition when revealed
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 500;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--brown);
+  &::before {
+    content: '';
+    width: 28px;
+    height: 2px;
+    border-radius: 2px;
+    background: currentColor;
+    opacity: 0.6;
+  }
+  &[data-reveal] {
+    transition:
+      letter-spacing var(--dur-headline) var(--ease-out),
+      opacity var(--dur-card) var(--ease-out);
+  }
+}
+html.motion .eyebrow[data-reveal]:not(.is-in) {
+  letter-spacing: 0.5em;
+  opacity: 0;
+}
+
+// Masked line reveal primitives (headline lines)
+.ml {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.1em; // keep descenders un-clipped
+  margin-bottom: -0.1em;
+}
+.ml-i {
+  display: block;
+  will-change: transform;
+}
+html.motion [data-mask]:not(.is-in) .ml-i {
+  transform: translateY(115%);
+}
+
+// Word stagger primitives
+.w {
+  display: inline-block;
+  white-space: pre;
+}
+html.motion [data-words]:not(.is-in) .w {
+  opacity: 0;
+  transform: translateY(0.6em);
+}
+
+// Pre-reveal state for generic reveal targets
+html.motion [data-reveal]:not(.is-in):not(.eyebrow) {
+  opacity: 0;
+  transform: translateY(28px);
+}
+
+// ── Buttons ──────────────────────────────────────────────
+.btn {
+  --btn-bg: var(--brown);
+  --btn-fg: #fff;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 52px;
+  padding: 0 30px;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  font-weight: 600;
+  font-size: 1rem;
+  letter-spacing: 0.02em;
+  overflow: hidden;
+  isolation: isolate;
+  box-shadow: 0 10px 24px -12px rgba(174, 98, 91, 0.7);
+  transition:
+    transform var(--dur-button) var(--ease-out),
+    box-shadow var(--dur-button) var(--ease-out),
+    background-color var(--dur-button) var(--ease-out),
+    color var(--dur-button) var(--ease-out);
+  // soft light following pointer (set by magneticButton via --mx/--my)
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(255, 255, 255, 0.28), transparent 55%);
+    opacity: 0;
+    transition: opacity var(--dur-hover) var(--ease-out);
+  }
+  .btn-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    will-change: transform;
+  }
+  @include hover-capable {
+    &:hover {
+      box-shadow: 0 16px 30px -12px rgba(174, 98, 91, 0.75);
+      &::before {
+        opacity: 1;
+      }
+    }
+  }
+  &:active {
+    transform: scale(0.97);
+  }
+  &--soft {
+    --btn-bg: var(--white);
+    --btn-fg: var(--brown);
+    box-shadow: 0 8px 20px -12px rgba(174, 98, 91, 0.45);
+    &::before {
+      background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(241, 176, 196, 0.5), transparent 60%);
+    }
+  }
+  &--salmon {
+    --btn-bg: var(--salmon);
+    --btn-fg: #4a2320; // AA on salmon
+    box-shadow: 0 10px 24px -12px rgba(247, 156, 138, 0.9);
+  }
+  &--sm {
+    min-height: 44px;
+    padding: 0 20px;
+    font-size: 0.92rem;
+  }
+  &[disabled],
+  &[aria-disabled='true'] {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+}
+
+// ── View transitions (progressive enhancement) ───────────
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 520ms;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+::view-transition-old(root) {
+  animation-name: vt-out;
+}
+::view-transition-new(root) {
+  animation-name: vt-in;
+}
+::view-transition-group(product-hero) {
+  animation-duration: 640ms;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+::view-transition-group(site-header) {
+  animation: none;
+}
+@keyframes vt-out {
+  to {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+@keyframes vt-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
+

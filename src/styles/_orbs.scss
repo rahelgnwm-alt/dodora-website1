@@ -1,0 +1,50 @@
+// Signature DODORA floating shapes: translucent pastel spheres, droplets and soft clouds.
+// Pure CSS gradients (no blur filters / images) so dozens are cheap to composite.
+.orb {
+  --s: 80px;
+  --c: #f1b0c4;
+  position: absolute;
+  width: var(--s);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 30% 26%, rgba(255, 255, 255, 0.95) 0 7%, rgba(255, 255, 255, 0) 32%),
+    radial-gradient(circle at 50% 62%, color-mix(in srgb, var(--c) 50%, transparent), color-mix(in srgb, var(--c) 16%, transparent) 72%);
+  box-shadow:
+    inset -6px -10px 18px color-mix(in srgb, var(--c) 38%, transparent),
+    inset 4px 6px 12px rgba(255, 255, 255, 0.5),
+    0 16px 28px -16px color-mix(in srgb, var(--c) 80%, transparent);
+  opacity: 0.9;
+  &--salmon {
+    --c: #f79c8a;
+  }
+  &--blue {
+    --c: #89aedb;
+  }
+  &--pink {
+    --c: #f1b0c4;
+  }
+  &--drop {
+    border-radius: 50% 0 50% 50%;
+    rotate: 45deg;
+  }
+}
+
+.cloud {
+  --s: 220px;
+  position: absolute;
+  width: var(--s);
+  aspect-ratio: 1.7;
+  pointer-events: none;
+  border-radius: 62% 38% 55% 45% / 58% 50% 50% 42%;
+  background: radial-gradient(ellipse at 40% 35%, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.35) 60%, rgba(255, 255, 255, 0));
+}
+
+.blob {
+  position: absolute;
+  pointer-events: none;
+  border-radius: 58% 42% 47% 53% / 52% 56% 44% 48%;
+  background: var(--blob-bg, linear-gradient(145deg, #f79c8a, #f1b0c4));
+}
+

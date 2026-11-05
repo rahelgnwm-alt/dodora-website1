@@ -1,0 +1,36 @@
+// ───────────────────────────────────────────────────────────
+// DODORA design tokens — single source of truth (SCSS + CSS vars)
+// Brand palette per DODORA guideline: Soft Salmon / Light Pink / Baby Blue / Brown
+// ───────────────────────────────────────────────────────────
+$salmon: #f79c8a;
+$pink: #f1b0c4;
+$blue: #89aedb;
+$brown: #ae625b;
+
+// Derived neutrals (tints of the brand palette, never off-brand greys)
+$cream: #fff4ee;
+$cream-deep: #fde6dd;
+$blush: #fbd9d8;
+$ink: #5a3531; // darkened brown for body text (AA contrast on cream)
+$ink-soft: #84514c;
+
+$bp-sm: 600px;
+$bp-md: 900px;
+$bp-lg: 1200px;
+
+@mixin up($bp) {
+  @media (min-width: $bp) {
+    @content;
+  }
+}
+@mixin down($bp) {
+  @media (max-width: $bp - 1px) {
+    @content;
+  }
+}
+@mixin hover-capable {
+  @media (hover: hover) and (pointer: fine) {
+    @content;
+  }
+}
+

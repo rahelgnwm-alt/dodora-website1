@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <title>DODORA — Sentuhan Lembut untuk Setiap Momen Si Kecil</title>
+    <base href="/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="DODORA: perawatan kulit dan rambut bayi & anak dengan natural active ingredients, formula lembut, dan pH balanced. Little Skin, Big Care."
+    />
+    <meta name="theme-color" content="#FFF4EE" />
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <link rel="preload" as="image" href="img/hero-mother-toddler.webp" fetchpriority="high" />
+    <link rel="preconnect" href="https://cdn.shopify.com" crossorigin />
+    <style>
+      /* Critical: avoid a white flash before the app boots; preloader fills the same cream. */
+      html { background: #fff4ee; }
+      body { margin: 0; background: #fff4ee; }
+    </style>
+    <script>
+      // Progressive enhancement flag: CSS only hides content for reveal animations when this is set.
+      // MotionService removes it if GSAP fails to load or the user prefers reduced motion.
+      (function () {
+        var rm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (!rm) document.documentElement.classList.add('motion');
+      })();
+    </script>
+  </head>
+  <body>
+    <app-root></app-root>
+    <noscript>DODORA membutuhkan JavaScript untuk menampilkan toko ini. Kunjungi https://dodoraofficial.com/</noscript>
+  </body>
+</html>

@@ -1,0 +1,78 @@
+@use '../../styles/tokens' as *;
+
+.ft {
+  position: relative;
+  color: #fff;
+  background: var(--brown);
+  margin-top: 0;
+  padding-bottom: 28px;
+  // Curve above uses its own fill (brown) and overlaps the previous section
+}
+.ft-in {
+  display: grid;
+  gap: 40px;
+  padding-top: 24px;
+  grid-template-columns: 1fr;
+  @include up($bp-md) {
+    grid-template-columns: 1.6fr 1fr 1fr;
+    gap: 64px;
+  }
+  nav {
+    display: grid;
+    align-content: start;
+    gap: 2px;
+    a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 40px;
+      width: fit-content;
+      opacity: 0.88;
+      transition: opacity var(--dur-hover) var(--ease-out), transform var(--dur-hover) var(--ease-out);
+      @include hover-capable {
+        &:hover {
+          opacity: 1;
+          transform: translateX(4px);
+        }
+      }
+    }
+    h2 {
+      font-size: 0.85rem;
+      letter-spacing: 0.18em;
+      color: var(--pink);
+      margin-bottom: 10px;
+    }
+  }
+}
+.ft-logo {
+  display: block;
+  width: 190px;
+  height: 46px;
+  background: #fff;
+  -webkit-mask: url('/img/logo.png') left center / contain no-repeat;
+  mask: url('/img/logo.png') left center / contain no-repeat;
+}
+.ft-brand {
+  display: grid;
+  gap: 16px;
+  max-width: 420px;
+  p {
+    opacity: 0.9;
+  }
+}
+.ft-ext {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  width: fit-content;
+  min-height: 44px;
+  font-weight: 600;
+  color: var(--pink);
+}
+.ft-copy {
+  margin-top: 48px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+

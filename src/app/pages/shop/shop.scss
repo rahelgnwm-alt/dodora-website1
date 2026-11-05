@@ -1,0 +1,114 @@
+@use '../../../styles/tokens' as *;
+
+.shop {
+  position: relative;
+  overflow: clip;
+  min-height: 80svh;
+  padding: calc(var(--header-h) + 70px) 0 clamp(80px, 9vw, 140px);
+  background:
+    radial-gradient(60% 40% at 90% 0%, rgba(241, 176, 196, 0.45), transparent 70%),
+    radial-gradient(50% 40% at 0% 20%, rgba(137, 174, 219, 0.25), transparent 70%);
+}
+.s-orb1 {
+  --s: clamp(90px, 12vw, 160px);
+  right: 7%;
+  top: 130px;
+}
+.s-orb2 {
+  --s: 56px;
+  left: 4%;
+  top: 280px;
+}
+.s-head {
+  display: grid;
+  justify-items: start;
+  gap: 14px;
+  margin-bottom: 30px;
+  h1 {
+    font-size: clamp(2.4rem, 5vw + 0.4rem, 5rem);
+  }
+}
+.s-count {
+  color: var(--ink-soft);
+}
+.s-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+.s-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 48px;
+  padding: 0 24px;
+  border-radius: var(--radius-pill);
+  background: #fff;
+  color: var(--brown);
+  font-weight: 600;
+  box-shadow: var(--shadow-soft);
+  transition:
+    background-color var(--dur-button) var(--ease-out),
+    color var(--dur-button) var(--ease-out),
+    transform var(--dur-button) var(--ease-spring);
+  @include hover-capable {
+    &:hover {
+      transform: translateY(-2px);
+    }
+  }
+  &.is-active {
+    background: var(--brown);
+    color: #fff;
+  }
+  &--clear {
+    background: var(--pink);
+  }
+}
+.s-age {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  max-width: 760px;
+  margin-bottom: clamp(28px, 4vw, 48px);
+  padding: 14px 18px;
+  border-radius: var(--radius-m);
+  background: rgba(255, 255, 255, 0.7);
+  font-size: 0.95rem;
+  color: var(--ink);
+  app-icon {
+    color: var(--brown);
+    margin-top: 2px;
+  }
+}
+.s-grid {
+  display: grid;
+  gap: clamp(14px, 2vw, 28px);
+  grid-template-columns: repeat(2, 1fr);
+  @include up($bp-md) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  @include up($bp-lg) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  @include down($bp-sm) {
+    grid-template-columns: 1fr;
+  }
+}
+.s-item {
+  animation: card-in var(--dur-card) var(--ease-out) both;
+  animation-delay: calc(var(--i) * 60ms);
+}
+@keyframes card-in {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+}
+.s-empty {
+  display: grid;
+  justify-items: start;
+  gap: 16px;
+  padding: 40px 0;
+}
+
