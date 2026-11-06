@@ -13,7 +13,7 @@
       </a>
     </header>
     <div class="bd-grid" dStagger staggerSelector=".bd-item" [staggerStep]="0.1" [staggerY]="34">
-      @for (p of bundles; track p.id) {
+      @for (p of bundles(); track p.id) {
         <div class="bd-item"><app-product-card [product]="p" /></div>
       }
     </div>

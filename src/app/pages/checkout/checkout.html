@@ -1,0 +1,130 @@
+<section class="co-page">
+  <div class="container">
+    @if (placedOrder(); as ord) {
+      <div class="co-done">
+        <span class="done-icon"><app-icon name="check" [size]="32" [stroke]="2.8" /></span>
+        <p class="eyebrow">Pesanan Dikonfirmasi</p>
+        <h1>Terima Kasih, {{ ord.customerName }}!</h1>
+        <p class="done-sub">
+          Pesananmu <strong>{{ ord.id }}</strong> telah tercatat dengan nomor resi <strong>{{ ord.trackingNumber }}</strong>.
+        </p>
+        <div class="done-actions">
+          <a routerLink="/masuk" class="btn">
+            <span class="btn-label"><app-icon name="package" [size]="18" /> Masuk untuk Lacak Pesanan</span>
+          </a>
+          <a routerLink="/belanja" class="btn btn--soft">
+            <span class="btn-label">Lanjut Belanja</span>
+          </a>
+        </div>
+      </div>
+    } @else if (cart.lines().length === 0) {
+      <div class="co-done">
+        <p class="eyebrow">Checkout</p>
+        <h1>Keranjangmu Masih Kosong</h1>
+        <p class="done-sub">Yuk pilih produk perawatan lembut untuk Si Kecil terlebih dahulu.</p>
+        <a routerLink="/belanja" class="btn"><span class="btn-label">Mulai Belanja <app-icon name="arrow-right" /></span></a>
+      </div>
+    } @else {
+      <header class="co-head">
+        <p class="eyebrow">Checkout Aman</p>
+        <h1>Selesaikan Pesanan</h1>
+        @if (!auth.isLoggedIn()) {
+          <p class="login-hint">
+            Sudah punya akun? <a routerLink="/masuk" [queryParams]="{ redirect: '/checkout' }">Masuk di sini</a> agar pesanan langsung tersimpan di halaman Akunmu.
+          </p>
+        }
+      </header>
+
+      <form class="co-grid" (ngSubmit)="placeOrder()">
+        <div class="co-form">
+          <div class="card">
+            <h2><app-icon name="map-pin" [size]="20" /> Alamat Pengiriman</h2>
+            <div class="fields">
+              <div class="row2">
+                <label class="field">
+                  <span>Nama Penerima</span>
+                  <input type="text" name="name" [(ngModel)]="name" required placeholder="Nama lengkap penerima" />
+                </label>
+                <label class="field">
+                  <span>Email Pelanggan (untuk pelacakan)</span>
+                  <input type="email" name="email" [(ngModel)]="email" required placeholder="nama@email.com" />
+                </label>
+              </div>
+              <label class="field">
+                <span>No. WhatsApp / Telepon</span>
+                <input type="tel" name="phone" [(ngModel)]="phone" required placeholder="0812-xxxx-xxxx" />
+              </label>
+              <label class="field">
+                <span>Alamat Lengkap</span>
+                <textarea name="address" [(ngModel)]="address" rows="3" required placeholder="Nama jalan, nomor rumah, RT/RW, kelurahan, kecamatan, kota, kode pos"></textarea>
+              </label>
+              <label class="field">
+                <span>Catatan untuk Kurir (opsional)</span>
+                <input type="text" name="notes" [(ngModel)]="notes" placeholder="Contoh: Titip di sekuriti jika sedang tidur siang" />
+              </label>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2><app-icon name="truck" [size]="20" /> Jasa Pengiriman</h2>
+            @if (freeShipping()) {
+              <p class="free-banner"><app-icon name="sparkles" [size]="16" /> Selamat! Pesanan di atas Rp250.000 mendapat Gratis Ongkir.</p>
+            }
+            <div class="choice-grid">
+              @for (c of couriers; track c.id) {
+                <button type="button" class="choice" [class.is-active]="selectedCourier().id === c.id" (click)="selectedCourier.set(c)">
+                  <div>
+                    <strong>{{ c.label }}</strong>
+                    <small>{{ c.eta }}</small>
+                  </div>
+                  <span class="choice-price">{{ freeShipping() ? 'Gratis' : (c.cost | idr) }}</span>
+                </button>
+              }
+            </div>
+          </div>
+
+          <div class="card">
+            <h2><app-icon name="shield" [size]="20" /> Metode Pembayaran</h2>
+            <div class="pay-grid">
+              @for (pm of payments; track pm) {
+                <button type="button" class="choice" [class.is-active]="selectedPayment() === pm" (click)="selectedPayment.set(pm)">
+                  <strong>{{ pm }}</strong>
+                </button>
+              }
+            </div>
+          </div>
+        </div>
+
+        <aside class="co-summary card">
+          <h2>Ringkasan Pesanan</h2>
+          <ul class="sum-lines">
+            @for (l of cart.lines(); track l.variantId) {
+              <li>
+                <span class="sum-img"><app-pimg [src]="l.image" sizes="64px" /></span>
+                <div class="sum-txt">
+                  <strong>{{ l.name }}</strong>
+                  <small>{{ l.variantTitle }} × {{ l.qty }}</small>
+                </div>
+                <span class="sum-price">{{ l.price * l.qty | idr }}</span>
+              </li>
+            }
+          </ul>
+
+          <div class="sum-rows">
+            <div><span>Subtotal ({{ cart.count() }} item)</span><strong>{{ cart.subtotal() | idr }}</strong></div>
+            <div><span>Ongkos Kirim</span><strong>{{ shippingCost() === 0 ? 'Gratis' : (shippingCost() | idr) }}</strong></div>
+            <div class="sum-total"><span>Total Pembayaran</span><strong>{{ grandTotal() | idr }}</strong></div>
+          </div>
+
+          <button type="submit" class="btn btn--block">
+            <span class="btn-label"><app-icon name="check" [size]="20" /> Buat Pesanan Sekarang</span>
+          </button>
+
+          <a class="ext-checkout" [href]="cart.checkoutUrl()" rel="noopener">
+            Atau lanjutkan via Shopify resmi DODORA <app-icon name="arrow-up-right" [size]="15" />
+          </a>
+        </aside>
+      </form>
+    }
+  </div>
+</section>

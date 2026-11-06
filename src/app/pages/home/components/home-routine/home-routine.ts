@@ -6,13 +6,14 @@ import { IdrPipe, ProductImage } from '../../../../components/product-image/prod
 import { CartService } from '../../../../data/cart.service';
 import { CatalogService } from '../../../../data/catalog.service';
 import type { Product } from '../../../../data/product.model';
+import { type LandingPhotoKey, SiteConfigService } from '../../../../data/site-config.service';
 import { FloatDirective, MaskDirective, RevealDirective, WordsDirective } from '../../../../motion/directives';
 
 interface Step {
   id: string;
   n: string;
   title: string;
-  img: string;
+  photoKey: LandingPhotoKey;
   bg: string;
   accent: string;
   text: string;
@@ -35,6 +36,7 @@ interface Step {
 })
 export class HomeRoutine {
   protected readonly cart = inject(CartService);
+  protected readonly siteConfig = inject(SiteConfigService);
   private readonly catalog = inject(CatalogService);
 
   protected readonly steps: Step[] = [
@@ -42,7 +44,7 @@ export class HomeRoutine {
       id: 'mandi',
       n: '01',
       title: 'Mandi',
-      img: 'scene-bath.webp',
+      photoKey: 'routineBath',
       bg: '#FBDDE6',
       accent: '#F1B0C4',
       alt: 'DODORA Body Bath di atas rak kayu bersama handuk lembut dan bebek mandi',
@@ -53,7 +55,7 @@ export class HomeRoutine {
       id: 'melembapkan',
       n: '02',
       title: 'Melembapkan',
-      img: 'scene-lotion.webp',
+      photoKey: 'routineLotion',
       bg: '#FDDCD3',
       accent: '#F79C8A',
       alt: 'DODORA Body Lotion + Serum extra 3in1 dengan hyaluronate dan ceramide',
@@ -64,7 +66,7 @@ export class HomeRoutine {
       id: 'rambut',
       n: '03',
       title: 'Merawat Rambut',
-      img: 'scene-hair.webp',
+      photoKey: 'routineHair',
       bg: '#DCE8F6',
       accent: '#89AEDB',
       alt: 'DODORA Nourish Hair Serum di atas handuk merah muda',
@@ -75,7 +77,7 @@ export class HomeRoutine {
       id: 'siap',
       n: '04',
       title: 'Siap Beraktivitas',
-      img: 'toddler-joy.webp',
+      photoKey: 'routineReady',
       bg: '#FFE6DB',
       accent: '#AE625B',
       alt: 'Balita tersenyum riang mengangkat kedua tangan',

@@ -2,9 +2,15 @@ import { ChangeDetectionStrategy, Component, Pipe, PipeTransform, computed, inpu
 
 const WIDTHS = [240, 360, 480, 640, 800, 1000];
 
-/** Shopify CDN URL at a given width (the CDN negotiates WebP/AVIF from the Accept header). */
+function isShopifyCdn(src: string): boolean {
+  return src.includes('cdn.shopify.com') && !src.startsWith('data:') && !src.startsWith('blob:');
+}
+
+/** Shopify CDN URL at a given width; leaves uploaded data URLs, local assets, and external URLs untouched. */
 export function cdn(src: string, w: number): string {
-  return `${src}?width=${w}`;
+  if (!isShopifyCdn(src)) return src;
+  const sep = src.includes('?') ? '&' : '?';
+  return `${src}${sep}width=${w}`;
 }
 
 @Pipe({ name: 'idr' })
@@ -29,5 +35,5 @@ export class ProductImage {
   readonly sizes = input<string>('(min-width: 900px) 30vw, 90vw');
   readonly eager = input<boolean>(false);
   readonly url = computed(() => cdn(this.src(), 640));
-  readonly srcset = computed(() => WIDTHS.map((w) => `${cdn(this.src(), w)} ${w}w`).join(', '));
+  readonly srcset = computed(() => (isShopifyCdn(this.src()) ? WIDTHS.map((w) => `${cdn(this.src(), w)} ${w}w`).join(', ') : null));
 }

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Icon } from '../../../../components/icon/icon';
 import { ProductCard } from '../../../../components/product-card/product-card';
@@ -13,5 +13,6 @@ import { FloatDirective, MagneticDirective, MaskDirective, RevealDirective, Stag
   styleUrl: './home-bundles.scss',
 })
 export class HomeBundles {
-  protected readonly bundles = inject(CatalogService).bundles();
+  private readonly catalog = inject(CatalogService);
+  protected readonly bundles = computed(() => this.catalog.bundles());
 }

@@ -30,7 +30,7 @@
         <ul class="s-ings" aria-label="Bahan aktif alami">
           @for (ing of ingredients; track ing.name; let i = $index) {
             <li class="ing" [class]="'ing ing-' + i">
-              <img class="ing-img" [src]="'img/' + ing.img" width="120" height="120" alt="" loading="lazy" decoding="async" />
+              <img class="ing-img" [src]="siteConfig.photos()[ing.photoKey]" width="120" height="120" alt="" loading="lazy" decoding="async" />
               <div class="ing-txt">
                 <h3>{{ ing.name }}</h3>
                 <p>{{ ing.benefit }}</p>

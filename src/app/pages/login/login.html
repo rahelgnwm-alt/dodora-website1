@@ -1,0 +1,112 @@
+<section class="auth-page">
+  <span class="orb orb--pink auth-orb1" dFloat [floatAmp]="14" [floatDuration]="8" aria-hidden="true"></span>
+  <span class="orb orb--blue auth-orb2" dFloat [floatAmp]="10" aria-hidden="true"></span>
+
+  <div class="container auth-grid">
+    <div class="auth-intro">
+      <p class="eyebrow">Akun DODORA</p>
+      <h1>Sentuhan Hangat di Setiap Pesanan</h1>
+      <p class="lead">
+        Pantau riwayat belanja Si Kecil, lacak pengiriman secara real-time, atau kelola katalog &amp; tampilan beranda melalui Panel Admin DODORA.
+      </p>
+
+      <div class="demo-box">
+        <p class="demo-title"><app-icon name="sparkles" [size]="18" /> Akses Cepat Demo (1 Klik)</p>
+        <div class="demo-cards">
+          <button type="button" class="demo-card" (click)="quickLogin('customer')">
+            <span class="demo-badge">Pelanggan</span>
+            <strong>Bunda Nadira</strong>
+            <small>bunda&#64;dodora.id · bunda123</small>
+            <span class="demo-go">Lihat pesanan &amp; lacak paket <app-icon name="arrow-right" [size]="16" /></span>
+          </button>
+
+          <button type="button" class="demo-card demo-card--admin" (click)="quickLogin('admin')">
+            <span class="demo-badge demo-badge--admin">Admin</span>
+            <strong>Admin DODORA</strong>
+            <small>admin&#64;dodora.id · admin123</small>
+            <span class="demo-go">Edit foto beranda &amp; kelola produk <app-icon name="arrow-right" [size]="16" /></span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="auth-card">
+      @if (auth.user(); as u) {
+        <div class="logged-banner">
+          <div>
+            <small>Sedang masuk sebagai</small>
+            <strong>{{ u.name }} ({{ u.role === 'admin' ? 'Admin' : 'Pelanggan' }})</strong>
+          </div>
+          <div class="logged-actions">
+            <a [routerLink]="u.role === 'admin' ? '/admin' : '/akun'" class="btn btn--sm">
+              <span class="btn-label">Buka Dashboard</span>
+            </a>
+            <button type="button" class="btn btn--soft btn--sm" (click)="auth.logout('/masuk')">
+              <span class="btn-label">Ganti Akun</span>
+            </button>
+          </div>
+        </div>
+      }
+
+      <div class="tabs" role="tablist" aria-label="Pilih masuk atau daftar">
+        <button type="button" role="tab" [attr.aria-selected]="mode() === 'login'" [class.is-active]="mode() === 'login'" (click)="switchMode('login')">
+          Masuk
+        </button>
+        <button type="button" role="tab" [attr.aria-selected]="mode() === 'register'" [class.is-active]="mode() === 'register'" (click)="switchMode('register')">
+          Daftar Pelanggan
+        </button>
+      </div>
+
+      @if (error()) {
+        <div class="alert" role="alert">
+          <app-icon name="alert" [size]="18" />
+          <span>{{ error() }}</span>
+        </div>
+      }
+
+      @if (mode() === 'login') {
+        <form class="form" (ngSubmit)="submitLogin()">
+          <label class="field">
+            <span>Alamat Email</span>
+            <input type="email" name="email" [(ngModel)]="email" required autocomplete="email" placeholder="nama@email.com" />
+          </label>
+          <label class="field">
+            <span>Kata Sandi</span>
+            <input type="password" name="password" [(ngModel)]="password" required autocomplete="current-password" placeholder="Masukkan kata sandi" />
+          </label>
+          <button type="submit" class="btn btn--block" dMagnetic>
+            <span class="btn-label"><app-icon name="lock" [size]="18" /> Masuk ke Akun</span>
+          </button>
+        </form>
+      } @else {
+        <form class="form" (ngSubmit)="submitRegister()">
+          <label class="field">
+            <span>Nama Lengkap</span>
+            <input type="text" name="regName" [(ngModel)]="regName" required autocomplete="name" placeholder="Contoh: Bunda Raisa" />
+          </label>
+          <div class="field-row">
+            <label class="field">
+              <span>Email</span>
+              <input type="email" name="regEmail" [(ngModel)]="regEmail" required autocomplete="email" placeholder="nama@email.com" />
+            </label>
+            <label class="field">
+              <span>No. WhatsApp / Telepon</span>
+              <input type="tel" name="regPhone" [(ngModel)]="regPhone" autocomplete="tel" placeholder="0812-xxxx-xxxx" />
+            </label>
+          </div>
+          <label class="field">
+            <span>Alamat Pengiriman Utama</span>
+            <textarea name="regAddress" [(ngModel)]="regAddress" rows="2" placeholder="Nama jalan, nomor rumah, kecamatan, kota, kode pos"></textarea>
+          </label>
+          <label class="field">
+            <span>Kata Sandi (min. 6 karakter)</span>
+            <input type="password" name="regPassword" [(ngModel)]="regPassword" required minlength="6" autocomplete="new-password" placeholder="Minimal 6 karakter" />
+          </label>
+          <button type="submit" class="btn btn--block" dMagnetic>
+            <span class="btn-label"><app-icon name="user" [size]="18" /> Buat Akun Pelanggan</span>
+          </button>
+        </form>
+      }
+    </div>
+  </div>
+</section>

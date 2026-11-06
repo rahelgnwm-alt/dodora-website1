@@ -1,0 +1,77 @@
+<div class="al-wrap">
+  <div class="al-top">
+    <div>
+      <h2>Foto &amp; Visual Landing Page</h2>
+      <p>Unggah foto baru dari perangkat atau tempel URL gambar. Perubahan langsung tampil di halaman utama DODORA.</p>
+    </div>
+    <div class="al-top-actions">
+      <a routerLink="/" class="btn btn--soft btn--sm">
+        <span class="btn-label"><app-icon name="arrow-up-right" [size]="16" /> Pratinjau Beranda</span>
+      </a>
+      @if (siteConfig.customizedCount() > 0) {
+        @if (!confirmResetAll()) {
+          <button type="button" class="btn btn--soft btn--sm" (click)="confirmResetAll.set(true)">
+            <span class="btn-label"><app-icon name="refresh" [size]="16" /> Reset Semua</span>
+          </button>
+        } @else {
+          <button type="button" class="btn btn--sm" (click)="resetAll()">
+            <span class="btn-label">Ya, Kembalikan Semua</span>
+          </button>
+          <button type="button" class="btn btn--soft btn--sm" (click)="confirmResetAll.set(false)">
+            <span class="btn-label">Batal</span>
+          </button>
+        }
+      }
+    </div>
+  </div>
+
+  @for (group of groups(); track group.name) {
+    <section class="slot-group">
+      <h3 class="group-title">{{ group.name }}</h3>
+      <div class="slot-grid">
+        @for (slot of group.slots; track slot.key) {
+          <article class="slot-card" [class.is-custom]="siteConfig.isCustomized(slot.key)">
+            <div class="slot-preview" [style.aspect-ratio]="slot.aspect">
+              <img [src]="siteConfig.photos()[slot.key]" [alt]="slot.label" loading="lazy" />
+              @if (siteConfig.isCustomized(slot.key)) {
+                <span class="custom-badge">Kustom</span>
+              }
+            </div>
+
+            <div class="slot-body">
+              <div class="slot-info">
+                <h4>{{ slot.label }}</h4>
+                <p>{{ slot.hint }}</p>
+              </div>
+
+              <div class="slot-controls">
+                <label class="upload-btn" [class.is-busy]="busyKey() === slot.key">
+                  <input type="file" accept="image/*" (change)="onFileChange($event, slot.key)" [disabled]="busyKey() === slot.key" />
+                  <app-icon name="upload" [size]="17" />
+                  <span>{{ busyKey() === slot.key ? 'Mengunggah…' : 'Upload Foto Baru' }}</span>
+                </label>
+
+                <div class="url-row">
+                  <input
+                    type="url"
+                    [ngModel]="urlInputs()[slot.key] ?? ''"
+                    (ngModelChange)="setUrlInput(slot.key, $event)"
+                    placeholder="Atau tempel URL https://…"
+                    aria-label="URL gambar"
+                  />
+                  <button type="button" class="apply-btn" (click)="applyUrl(slot.key)">Pakai</button>
+                </div>
+
+                @if (siteConfig.isCustomized(slot.key)) {
+                  <button type="button" class="reset-link" (click)="siteConfig.resetPhoto(slot.key)">
+                    <app-icon name="refresh" [size]="14" /> Kembalikan foto bawaan
+                  </button>
+                }
+              </div>
+            </div>
+          </article>
+        }
+      </div>
+    </section>
+  }
+</div>

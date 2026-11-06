@@ -13,6 +13,7 @@ import { Icon } from '../../../../components/icon/icon';
 import { IdrPipe, ProductImage } from '../../../../components/product-image/product-image';
 import { CartService } from '../../../../data/cart.service';
 import { CatalogService } from '../../../../data/catalog.service';
+import { type LandingPhotoKey, SiteConfigService } from '../../../../data/site-config.service';
 import { MagneticDirective } from '../../../../motion/directives';
 import { MotionService } from '../../../../motion/motion.service';
 
@@ -34,6 +35,7 @@ import { MotionService } from '../../../../motion/motion.service';
 export class HomeStory {
   private readonly catalog = inject(CatalogService);
   private readonly cart = inject(CartService);
+  protected readonly siteConfig = inject(SiteConfigService);
   private readonly motion = inject(MotionService);
   private readonly destroyRef = inject(DestroyRef);
 
@@ -41,13 +43,13 @@ export class HomeStory {
   private readonly pin = viewChild.required<ElementRef<HTMLElement>>('pin');
   private readonly stage = viewChild.required<ElementRef<HTMLElement>>('stage');
 
-  protected readonly p = computed(() => this.catalog.byHandle('dodora-baby-and-kids-gentle-hair-shampoo'));
+  protected readonly p = computed(() => this.catalog.byHandle('dodora-baby-and-kids-gentle-hair-shampoo') ?? this.catalog.all[0]);
 
-  protected readonly ingredients = [
-    { name: 'Ekstrak Ginseng', benefit: 'Merangsang pertumbuhan rambut Si Kecil', img: 'ing-ginseng.webp' },
-    { name: 'Aloe Vera', benefit: 'Melembapkan & menjaga kulit kepala Si Kecil tetap sehat', img: 'ing-aloe.webp' },
-    { name: 'Ekstrak Centella Asiatica', benefit: 'Menenangkan kulit kepala Si Kecil yang gatal', img: 'ing-centella.webp' },
-    { name: 'Argan Oil', benefit: 'Kaya asam lemak dan Vitamin E untuk membantu memperkuat akar rambut', img: 'ing-argan.webp' },
+  protected readonly ingredients: { name: string; benefit: string; photoKey: LandingPhotoKey }[] = [
+    { name: 'Ekstrak Ginseng', benefit: 'Merangsang pertumbuhan rambut Si Kecil', photoKey: 'storyIng0' },
+    { name: 'Aloe Vera', benefit: 'Melembapkan & menjaga kulit kepala Si Kecil tetap sehat', photoKey: 'storyIng1' },
+    { name: 'Ekstrak Centella Asiatica', benefit: 'Menenangkan kulit kepala Si Kecil yang gatal', photoKey: 'storyIng2' },
+    { name: 'Argan Oil', benefit: 'Kaya asam lemak dan Vitamin E untuk membantu memperkuat akar rambut', photoKey: 'storyIng3' },
   ];
   protected readonly claims = ['No paraben', 'No silicons', 'No mineral oil', 'pH balanced', 'Dapat digunakan anak 0+'];
 

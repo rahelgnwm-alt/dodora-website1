@@ -1,0 +1,76 @@
+<section class="adm-page">
+  <div class="container">
+    <header class="adm-head">
+      <div>
+        <p class="eyebrow">DODORA Workspace</p>
+        <h1>Panel Admin</h1>
+        <p class="sub">Kelola katalog produk, ganti foto landing page secara langsung, dan perbarui pelacakan pesanan pelanggan.</p>
+      </div>
+      <div class="adm-actions">
+        <a routerLink="/" class="btn btn--soft btn--sm">
+          <span class="btn-label"><app-icon name="image" [size]="17" /> Lihat Beranda</span>
+        </a>
+        <a routerLink="/belanja" class="btn btn--soft btn--sm">
+          <span class="btn-label"><app-icon name="bag" [size]="17" /> Lihat Toko</span>
+        </a>
+        <button type="button" class="btn btn--soft btn--sm" (click)="auth.logout()">
+          <span class="btn-label"><app-icon name="log-out" [size]="17" /> Keluar</span>
+        </button>
+      </div>
+    </header>
+
+    <div class="kpi-grid">
+      <button type="button" class="kpi" [class.is-active]="tab() === 'products'" (click)="tab.set('products')">
+        <span class="kpi-ic"><app-icon name="bag" [size]="22" /></span>
+        <div>
+          <strong>{{ catalog.products().length }}</strong>
+          <span>Produk Aktif</span>
+        </div>
+      </button>
+
+      <button type="button" class="kpi kpi--pink" [class.is-active]="tab() === 'landing'" (click)="tab.set('landing')">
+        <span class="kpi-ic"><app-icon name="image" [size]="22" /></span>
+        <div>
+          <strong>{{ siteConfig.customizedCount() }} / {{ siteConfig.slots.length }}</strong>
+          <span>Foto Beranda Diubah</span>
+        </div>
+      </button>
+
+      <button type="button" class="kpi kpi--blue" [class.is-active]="tab() === 'orders'" (click)="tab.set('orders')">
+        <span class="kpi-ic"><app-icon name="truck" [size]="22" /></span>
+        <div>
+          <strong>{{ orderSvc.orders().length }}</strong>
+          <span>Total Pesanan</span>
+        </div>
+      </button>
+
+      <div class="kpi kpi--static">
+        <span class="kpi-ic"><app-icon name="sparkles" [size]="22" /></span>
+        <div>
+          <strong>{{ orderSvc.totalRevenue() | idr }}</strong>
+          <span>Total Pendapatan</span>
+        </div>
+      </div>
+    </div>
+
+    <nav class="adm-tabs" role="tablist" aria-label="Menu Admin">
+      <button type="button" role="tab" [attr.aria-selected]="tab() === 'products'" [class.is-active]="tab() === 'products'" (click)="tab.set('products')">
+        <app-icon name="bag" [size]="18" /> Kelola Produk ({{ catalog.products().length }})
+      </button>
+      <button type="button" role="tab" [attr.aria-selected]="tab() === 'landing'" [class.is-active]="tab() === 'landing'" (click)="tab.set('landing')">
+        <app-icon name="image" [size]="18" /> Edit Foto Landing Page
+      </button>
+      <button type="button" role="tab" [attr.aria-selected]="tab() === 'orders'" [class.is-active]="tab() === 'orders'" (click)="tab.set('orders')">
+        <app-icon name="package" [size]="18" /> Pesanan &amp; Pelacakan ({{ orderSvc.orders().length }})
+      </button>
+    </nav>
+
+    <div class="adm-body">
+      @switch (tab()) {
+        @case ('products') { <app-admin-products /> }
+        @case ('landing') { <app-admin-landing /> }
+        @case ('orders') { <app-admin-orders /> }
+      }
+    </div>
+  </div>
+</section>

@@ -16,6 +16,22 @@
       <button type="button" class="icon-btn" (click)="openSearch()" aria-label="Cari produk" aria-haspopup="dialog">
         <app-icon name="search" [size]="22" />
       </button>
+      @if (auth.user(); as u) {
+        <a
+          [routerLink]="u.role === 'admin' ? '/admin' : '/akun'"
+          routerLinkActive="is-active"
+          class="acct-pill"
+          [attr.aria-label]="u.role === 'admin' ? 'Buka Panel Admin' : 'Buka halaman akun ' + u.name"
+        >
+          <app-icon [name]="u.role === 'admin' ? 'sparkles' : 'user'" [size]="18" />
+          <span class="acct-lbl">{{ u.role === 'admin' ? 'Admin' : 'Akun' }}</span>
+        </a>
+      } @else {
+        <a routerLink="/masuk" routerLinkActive="is-active" class="acct-pill" aria-label="Masuk ke akun">
+          <app-icon name="user" [size]="18" />
+          <span class="acct-lbl">Masuk</span>
+        </a>
+      }
       <button type="button" class="icon-btn cart-btn" (click)="cart.drawerOpen.set(true)" [attr.aria-label]="'Buka keranjang, ' + cart.count() + ' item'" aria-haspopup="dialog">
         <app-icon name="bag" [size]="22" />
         <span class="badge" [class.bump]="bump()" [hidden]="cart.count() === 0">{{ cart.count() }}</span>
@@ -74,8 +90,15 @@
       <a routerLink="/belanja" style="--i: 1" (click)="menuDlg.close()"><span>Belanja</span><app-icon name="arrow-right" /></a>
       <a routerLink="/" fragment="rutinitas" style="--i: 2" (click)="menuDlg.close(); jumpTo('rutinitas')"><span>Rutinitas</span><app-icon name="arrow-right" /></a>
       <a routerLink="/" fragment="tentang" style="--i: 3" (click)="menuDlg.close(); jumpTo('tentang')"><span>Tentang</span><app-icon name="arrow-right" /></a>
+      @if (auth.user(); as u) {
+        <a [routerLink]="u.role === 'admin' ? '/admin' : '/akun'" style="--i: 4" (click)="menuDlg.close()">
+          <span>{{ u.role === 'admin' ? 'Panel Admin' : 'Akun & Pesanan' }}</span><app-icon name="arrow-right" />
+        </a>
+      } @else {
+        <a routerLink="/masuk" style="--i: 4" (click)="menuDlg.close()"><span>Masuk / Daftar</span><app-icon name="arrow-right" /></a>
+      }
     </nav>
-    <div class="menu-foot" style="--i: 4">
+    <div class="menu-foot" style="--i: 5">
       <button type="button" class="btn btn--salmon" (click)="menuDlg.close(); cart.drawerOpen.set(true)">
         <span class="btn-label"><app-icon name="bag" /> Keranjang ({{ cart.count() }})</span>
       </button>

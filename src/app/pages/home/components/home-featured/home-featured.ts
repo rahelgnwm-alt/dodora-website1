@@ -33,9 +33,9 @@ export class HomeFeatured {
   private readonly destroyRef = inject(DestroyRef);
   private readonly root = viewChild.required<ElementRef<HTMLElement>>('root');
 
-  protected readonly left = computed(() => this.catalog.byHandle('dodora-baby-and-kids-gentle-hair-shampoo'));
-  protected readonly center = computed(() => this.catalog.byHandle('dodora-baby-and-kids-body-bath'));
-  protected readonly right = computed(() => this.catalog.byHandle('dodora-body-lotion-serum'));
+  protected readonly left = computed(() => this.catalog.byHandle('dodora-baby-and-kids-gentle-hair-shampoo') ?? this.catalog.all[1]);
+  protected readonly center = computed(() => this.catalog.byHandle('dodora-baby-and-kids-body-bath') ?? this.catalog.all[0]);
+  protected readonly right = computed(() => this.catalog.byHandle('dodora-body-lotion-serum') ?? this.catalog.all[2]);
 
   constructor() {
     afterNextRender(() => this.setup());

@@ -83,7 +83,7 @@
             </span>
           </button>
         </div>
-        <a class="buy-now" data-i [href]="buyNowUrl()" rel="noopener">Beli sekarang <app-icon name="arrow-up-right" [size]="16" /></a>
+        <button type="button" class="buy-now" data-i (click)="buyNow()">Beli sekarang <app-icon name="arrow-right" [size]="16" /></button>
 
         <ul class="assure" data-i>
           <li><app-icon name="shield" [size]="18" /> Formula lembut, no harmful ingredients</li>

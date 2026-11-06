@@ -12,7 +12,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { Title } from '@angular/platform-browser';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { Icon } from '../../components/icon/icon';
 import { ProductCard } from '../../components/product-card/product-card';
 import { IdrPipe, ProductImage, cdn } from '../../components/product-image/product-image';
@@ -32,6 +32,7 @@ import { MotionService } from '../../motion/motion.service';
 export class Product {
   private readonly catalog = inject(CatalogService);
   private readonly cart = inject(CartService);
+  private readonly router = inject(Router);
   private readonly title = inject(Title);
   private readonly motion = inject(MotionService);
   private readonly destroyRef = inject(DestroyRef);
@@ -126,6 +127,13 @@ export class Product {
   protected add() {
     const p = this.product();
     if (p) this.cart.add(p, this.variant(), this.qty());
+  }
+
+  protected buyNow() {
+    const p = this.product();
+    if (p && this.cart.add(p, this.variant(), this.qty())) {
+      this.router.navigateByUrl('/checkout');
+    }
   }
 
   protected toggle(id: string) {

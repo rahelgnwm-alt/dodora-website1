@@ -41,8 +41,8 @@
     @if (cart.lines().length) {
       <footer class="d-foot">
         <div class="sub"><span>Subtotal</span><strong>{{ cart.subtotal() | idr }}</strong></div>
-        <p class="note">Ongkos kirim dan pembayaran dihitung di checkout toko resmi DODORA.</p>
-        <a class="btn btn--block" [href]="cart.checkoutUrl()" rel="noopener">
+        <p class="note">Pesanan otomatis tercatat di halaman Akun &amp; dapat dilacak secara real-time.</p>
+        <a class="btn btn--block" routerLink="/checkout" (click)="dlg.close()">
           <span class="btn-label">Lanjut ke checkout <app-icon name="arrow-right" /></span>
         </a>
       </footer>

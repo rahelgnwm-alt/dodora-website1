@@ -1,0 +1,247 @@
+<section class="cust-page">
+  <div class="container">
+    @if (auth.user(); as u) {
+      <header class="cust-head">
+        <div>
+          <p class="eyebrow">Akun Pelanggan</p>
+          <h1>Halo, {{ u.name }}!</h1>
+          <p class="sub">Pantau seluruh riwayat pembelian dan lacak perjalanan paket Si Kecil di satu tempat.</p>
+        </div>
+        <div class="head-actions">
+          @if (u.role === 'admin') {
+            <a routerLink="/admin" class="btn btn--sm"><span class="btn-label"><app-icon name="sparkles" [size]="17" /> Panel Admin</span></a>
+          }
+          <a routerLink="/belanja" class="btn btn--soft btn--sm"><span class="btn-label"><app-icon name="bag" [size]="17" /> Belanja Lagi</span></a>
+          <button type="button" class="btn btn--soft btn--sm" (click)="auth.logout()"><span class="btn-label"><app-icon name="log-out" [size]="17" /> Keluar</span></button>
+        </div>
+      </header>
+
+      <div class="stats-row">
+        <div class="stat-card">
+          <span class="stat-ic"><app-icon name="package" [size]="22" /></span>
+          <div>
+            <strong>{{ myOrders().length }}</strong>
+            <span>Total Pesanan</span>
+          </div>
+        </div>
+        <div class="stat-card stat-card--blue">
+          <span class="stat-ic"><app-icon name="truck" [size]="22" /></span>
+          <div>
+            <strong>{{ inTransitCount() }}</strong>
+            <span>Dalam Pengiriman</span>
+          </div>
+        </div>
+        <div class="stat-card stat-card--pink">
+          <span class="stat-ic"><app-icon name="check" [size]="22" /></span>
+          <div>
+            <strong>{{ completedCount() }}</strong>
+            <span>Pesanan Selesai</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="cust-grid">
+        <!-- ── Purchases & Tracking Column ── -->
+        <div class="orders-col">
+          <div class="toolbar">
+            <div class="filter-pills" role="tablist" aria-label="Filter status pesanan">
+              <button type="button" [class.is-active]="filter() === 'all'" (click)="filter.set('all')">Semua</button>
+              <button type="button" [class.is-active]="filter() === 'active'" (click)="filter.set('active')">Diproses</button>
+              <button type="button" [class.is-active]="filter() === 'shipped'" (click)="filter.set('shipped')">Dikirim</button>
+              <button type="button" [class.is-active]="filter() === 'delivered'" (click)="filter.set('delivered')">Selesai</button>
+            </div>
+            <label class="track-search" aria-label="Cari nomor pesanan atau resi">
+              <app-icon name="search" [size]="18" />
+              <input
+                type="search"
+                [ngModel]="trackQuery()"
+                (ngModelChange)="trackQuery.set($event)"
+                placeholder="Cari No. Pesanan / Resi / Produk…"
+              />
+            </label>
+          </div>
+
+          @if (filteredOrders().length === 0) {
+            <div class="empty-orders">
+              <span class="orb orb--pink" style="--s: 72px; position: relative"></span>
+              <h2>Belum ada pesanan yang cocok</h2>
+              <p>Mulai belanja produk perawatan lembut DODORA untuk melihat status pengiriman di sini.</p>
+              <a routerLink="/belanja" class="btn"><span class="btn-label">Lihat Katalog <app-icon name="arrow-right" /></span></a>
+            </div>
+          } @else {
+            <div class="order-list">
+              @for (ord of filteredOrders(); track ord.id) {
+                <article class="order-card" [class.is-open]="expandedId() === ord.id">
+                  <button
+                    type="button"
+                    class="order-summary"
+                    [attr.aria-expanded]="expandedId() === ord.id"
+                    (click)="toggleOrder(ord.id)"
+                  >
+                    <div class="os-main">
+                      <div class="os-top">
+                        <strong class="ord-id">{{ ord.id }}</strong>
+                        <span class="status-pill" [attr.data-status]="ord.status">{{ statusLabel(ord.status) }}</span>
+                      </div>
+                      <p class="os-meta">
+                        {{ ord.createdAt | date: 'dd MMM yyyy, HH:mm' }} · {{ ord.courier }} · Resi: <strong>{{ ord.trackingNumber }}</strong>
+                      </p>
+                    </div>
+                    <div class="os-right">
+                      <strong class="ord-total">{{ ord.total | idr }}</strong>
+                      <span class="chev"><app-icon name="chevron-down" [size]="20" /></span>
+                    </div>
+                  </button>
+
+                  @if (expandedId() === ord.id) {
+                    <div class="order-detail">
+                      <!-- Visual Tracking Progress Stepper -->
+                      @if (ord.status !== 'cancelled') {
+                        <div class="tracker" aria-label="Tahap pengiriman">
+                          <div class="tracker-bar">
+                            <span
+                              class="tracker-fill"
+                              [style.width.%]="(stepIdx(ord.status) / (steps.length - 1)) * 100"
+                            ></span>
+                          </div>
+                          <ol class="tracker-steps">
+                            @for (st of steps; track st.key; let i = $index) {
+                              <li [class.is-done]="i <= stepIdx(ord.status)" [class.is-current]="i === stepIdx(ord.status)">
+                                <span class="dot">
+                                  @if (i < stepIdx(ord.status) || ord.status === 'delivered') {
+                                    <app-icon name="check" [size]="14" [stroke]="3" />
+                                  } @else {
+                                    {{ i + 1 }}
+                                  }
+                                </span>
+                                <span class="lbl">{{ st.label }}</span>
+                              </li>
+                            }
+                          </ol>
+                        </div>
+                      }
+
+                      <div class="detail-cols">
+                        <!-- Chronological Tracking Log -->
+                        <div class="timeline-box">
+                          <h3><app-icon name="truck" [size]="18" /> Riwayat Pelacakan Paket</h3>
+                          <ol class="timeline">
+                            @for (ev of ord.timeline.slice().reverse(); track $index) {
+                              <li>
+                                <span class="tl-dot"></span>
+                                <div class="tl-body">
+                                  <strong>{{ ev.title }}</strong>
+                                  <p>{{ ev.note }}</p>
+                                  <time>{{ ev.timestamp | date: 'dd MMM yyyy, HH:mm' }}</time>
+                                </div>
+                              </li>
+                            }
+                          </ol>
+
+                          <div class="ship-dest">
+                            <small>Dikirim ke</small>
+                            <strong>{{ ord.customerName }} ({{ ord.phone }})</strong>
+                            <p>{{ ord.address }}</p>
+                          </div>
+                        </div>
+
+                        <!-- Purchased Items & Actions -->
+                        <div class="items-box">
+                          <h3><app-icon name="bag" [size]="18" /> Rincian Produk ({{ ord.items.length }})</h3>
+                          <ul class="ord-items">
+                            @for (item of ord.items; track item.variantId) {
+                              <li>
+                                <a class="oi-img" [routerLink]="['/produk', item.handle]">
+                                  <app-pimg [src]="item.image" sizes="64px" />
+                                </a>
+                                <div class="oi-txt">
+                                  <a [routerLink]="['/produk', item.handle]"><strong>{{ item.name }}</strong></a>
+                                  <small>{{ item.variantTitle }} × {{ item.qty }}</small>
+                                </div>
+                                <span class="oi-price">{{ item.price * item.qty | idr }}</span>
+                              </li>
+                            }
+                          </ul>
+
+                          <div class="price-breakdown">
+                            <div><span>Metode Pembayaran</span><strong>{{ ord.paymentMethod }}</strong></div>
+                            <div><span>Subtotal</span><span>{{ ord.subtotal | idr }}</span></div>
+                            <div><span>Ongkos Kirim</span><span>{{ ord.shippingCost === 0 ? 'Gratis' : (ord.shippingCost | idr) }}</span></div>
+                            <div class="pb-total"><span>Total Belanja</span><strong>{{ ord.total | idr }}</strong></div>
+                          </div>
+
+                          <div class="ord-actions">
+                            @if (ord.status === 'shipped') {
+                              <button type="button" class="btn btn--sm" (click)="confirmReceived(ord)">
+                                <span class="btn-label"><app-icon name="check" [size]="16" /> Pesanan Diterima</span>
+                              </button>
+                            }
+                            <button type="button" class="btn btn--soft btn--sm" (click)="reorder(ord)">
+                              <span class="btn-label"><app-icon name="refresh" [size]="16" /> Beli Lagi</span>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  }
+                </article>
+              }
+            </div>
+          }
+        </div>
+
+        <!-- ── Profile & Address Card ── -->
+        <aside class="profile-card">
+          <div class="pc-head">
+            <h2><app-icon name="user" [size]="20" /> Profil &amp; Alamat</h2>
+            @if (!editingProfile()) {
+              <button type="button" class="edit-btn" (click)="editingProfile.set(true)">
+                <app-icon name="edit" [size]="16" /> Ubah
+              </button>
+            }
+          </div>
+
+          @if (!editingProfile()) {
+            <dl class="prof-dl">
+              <div>
+                <dt>Nama</dt>
+                <dd>{{ u.name }}</dd>
+              </div>
+              <div>
+                <dt>Email</dt>
+                <dd>{{ u.email }}</dd>
+              </div>
+              <div>
+                <dt>Telepon / WhatsApp</dt>
+                <dd>{{ u.phone || 'Belum diisi' }}</dd>
+              </div>
+              <div>
+                <dt>Alamat Utama</dt>
+                <dd>{{ u.address || 'Belum diisi' }}</dd>
+              </div>
+            </dl>
+          } @else {
+            <form class="prof-form" (ngSubmit)="saveProfile()">
+              <label class="field">
+                <span>Nama Lengkap</span>
+                <input type="text" name="profName" [(ngModel)]="profName" required />
+              </label>
+              <label class="field">
+                <span>No. WhatsApp / Telepon</span>
+                <input type="tel" name="profPhone" [(ngModel)]="profPhone" />
+              </label>
+              <label class="field">
+                <span>Alamat Pengiriman</span>
+                <textarea name="profAddress" [(ngModel)]="profAddress" rows="3"></textarea>
+              </label>
+              <div class="prof-btns">
+                <button type="submit" class="btn btn--sm"><span class="btn-label">Simpan</span></button>
+                <button type="button" class="btn btn--soft btn--sm" (click)="editingProfile.set(false)"><span class="btn-label">Batal</span></button>
+              </div>
+            </form>
+          }
+        </aside>
+      </div>
+    }
+  </div>
+</section>

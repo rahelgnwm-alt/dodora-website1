@@ -9,6 +9,7 @@ import {
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Icon } from '../../../../components/icon/icon';
+import { SiteConfigService } from '../../../../data/site-config.service';
 import { FloatDirective, MagneticDirective, MaskDirective, RevealDirective, StaggerDirective, WordsDirective } from '../../../../motion/directives';
 import { MotionService } from '../../../../motion/motion.service';
 
@@ -21,6 +22,7 @@ import { MotionService } from '../../../../motion/motion.service';
   styleUrl: './home-about.scss',
 })
 export class HomeAbout {
+  protected readonly siteConfig = inject(SiteConfigService);
   private readonly motion = inject(MotionService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly root = viewChild.required<ElementRef<HTMLElement>>('root');

@@ -1,0 +1,102 @@
+<div class="ao-wrap">
+  <div class="ao-toolbar">
+    <div class="st-pills">
+      <button type="button" [class.is-active]="filterStatus() === 'all'" (click)="filterStatus.set('all')">Semua</button>
+      @for (s of statuses; track s) {
+        <button type="button" [class.is-active]="filterStatus() === s" (click)="filterStatus.set(s)">{{ statusLabel(s) }}</button>
+      }
+    </div>
+
+    <label class="search-box" aria-label="Cari pesanan">
+      <app-icon name="search" [size]="18" />
+      <input type="search" [ngModel]="query()" (ngModelChange)="query.set($event)" placeholder="Cari ID / Pelanggan / Resi…" />
+    </label>
+  </div>
+
+  <div class="ao-list">
+    @for (o of filtered(); track o.id) {
+      <article class="ao-card" [class.is-open]="openId() === o.id">
+        <button type="button" class="ao-head" (click)="toggle(o)" [attr.aria-expanded]="openId() === o.id">
+          <div class="ao-main">
+            <div class="ao-top">
+              <strong>{{ o.id }}</strong>
+              <span class="st-badge" [attr.data-status]="o.status">{{ statusLabel(o.status) }}</span>
+              <span class="cust-tag">{{ o.customerName }} ({{ o.customerEmail }})</span>
+            </div>
+            <p class="ao-meta">{{ o.createdAt | date: 'dd MMM yyyy, HH:mm' }} · {{ o.courier }} · Resi: <strong>{{ o.trackingNumber }}</strong></p>
+          </div>
+          <div class="ao-right">
+            <strong>{{ o.total | idr }}</strong>
+            <span class="chev"><app-icon name="chevron-down" [size]="20" /></span>
+          </div>
+        </button>
+
+        @if (openId() === o.id) {
+          <div class="ao-body">
+            <div class="ao-cols">
+              <!-- Update Tracking Form -->
+              <div class="update-box">
+                <h3><app-icon name="truck" [size]="18" /> Perbarui Status &amp; Nomor Resi</h3>
+                <label class="field">
+                  <span>Status Pengiriman</span>
+                  <select [ngModel]="draftStatus()[o.id] ?? o.status" (ngModelChange)="setStatus(o.id, $event)">
+                    @for (st of statuses; track st) {
+                      <option [ngValue]="st">{{ statusLabel(st) }}</option>
+                    }
+                  </select>
+                </label>
+
+                <label class="field">
+                  <span>Nomor Resi ({{ o.courier }})</span>
+                  <input type="text" [ngModel]="draftResi()[o.id] ?? o.trackingNumber" (ngModelChange)="setResi(o.id, $event)" placeholder="Masukkan nomor resi" />
+                </label>
+
+                <label class="field">
+                  <span>Catatan Pelacakan untuk Pelanggan (opsional)</span>
+                  <input
+                    type="text"
+                    [ngModel]="draftNote()[o.id] ?? ''"
+                    (ngModelChange)="setNote(o.id, $event)"
+                    placeholder="Contoh: Paket tiba di Hub Jakarta Selatan"
+                  />
+                </label>
+
+                <button type="button" class="btn btn--sm" (click)="saveUpdate(o)">
+                  <span class="btn-label"><app-icon name="check" [size]="17" /> Simpan Status Pelacakan</span>
+                </button>
+              </div>
+
+              <!-- Customer & Items Info -->
+              <div class="info-box">
+                <h3><app-icon name="package" [size]="18" /> Detail Pesanan ({{ o.items.length }} produk)</h3>
+                <ul class="item-rows">
+                  @for (it of o.items; track it.variantId) {
+                    <li>
+                      <span class="it-img"><app-pimg [src]="it.image" sizes="56px" /></span>
+                      <div>
+                        <strong>{{ it.name }}</strong>
+                        <small>{{ it.variantTitle }} × {{ it.qty }}</small>
+                      </div>
+                      <span>{{ it.price * it.qty | idr }}</span>
+                    </li>
+                  }
+                </ul>
+
+                <div class="dest-info">
+                  <p><strong>Penerima:</strong> {{ o.customerName }} · {{ o.phone }}</p>
+                  <p><strong>Alamat:</strong> {{ o.address }}</p>
+                  <p><strong>Pembayaran:</strong> {{ o.paymentMethod }}</p>
+                  @if (o.notes) {
+                    <p><strong>Catatan:</strong> {{ o.notes }}</p>
+                  }
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+      </article>
+    } @empty {
+      <div class="empty-ao">Belum ada pesanan yang sesuai filter.</div>
+    }
+  </div>
+</div>

@@ -1,0 +1,236 @@
+@use '../../../../../styles/tokens' as *;
+
+.ao-wrap {
+  display: grid;
+  gap: 20px;
+}
+
+.ao-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.st-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  button {
+    min-height: 38px;
+    padding: 0 14px;
+    border-radius: var(--radius-pill);
+    border: 1px solid rgba(174, 98, 91, 0.2);
+    background: #fff;
+    color: var(--ink-soft);
+    font-size: 0.84rem;
+    font-weight: 600;
+    &.is-active {
+      background: var(--brown);
+      border-color: var(--brown);
+      color: #fff;
+    }
+  }
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 14px;
+  border-radius: var(--radius-pill);
+  background: #fff;
+  border: 1px solid rgba(174, 98, 91, 0.2);
+  color: var(--brown);
+  input {
+    border: 0;
+    outline: none;
+    background: transparent;
+    font: inherit;
+    font-size: 0.88rem;
+    width: 220px;
+  }
+}
+
+.ao-list {
+  display: grid;
+  gap: 14px;
+}
+
+.ao-card {
+  border-radius: var(--radius-l);
+  background: #fff;
+  box-shadow: var(--shadow-soft);
+  border: 2px solid transparent;
+  overflow: hidden;
+  &.is-open {
+    border-color: rgba(137, 174, 219, 0.65);
+  }
+}
+
+.ao-head {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px 22px;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  color: var(--ink);
+}
+
+.ao-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  strong {
+    color: var(--brown);
+    font-size: 1.05rem;
+  }
+}
+
+.cust-tag {
+  font-size: 0.86rem;
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.st-badge {
+  padding: 3px 11px;
+  border-radius: var(--radius-pill);
+  font-size: 0.75rem;
+  font-weight: 700;
+  background: rgba(247, 156, 138, 0.25);
+  color: var(--brown);
+  &[data-status='shipped'] {
+    background: rgba(137, 174, 219, 0.3);
+    color: #254973;
+  }
+  &[data-status='delivered'] {
+    background: #dff3e6;
+    color: #1f6338;
+  }
+  &[data-status='cancelled'] {
+    background: #fde5e3;
+    color: #8c2f27;
+  }
+}
+
+.ao-meta {
+  margin-top: 4px;
+  font-size: 0.84rem;
+  color: var(--ink-soft);
+}
+
+.ao-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  .chev {
+    color: var(--brown);
+    transition: transform var(--dur-button) var(--ease-out);
+    .ao-card.is-open & {
+      transform: rotate(180deg);
+    }
+  }
+}
+
+.ao-body {
+  padding: 6px 22px 24px;
+  border-top: 1px solid rgba(174, 98, 91, 0.12);
+}
+
+.ao-cols {
+  display: grid;
+  gap: 20px;
+  @include up($bp-md) {
+    grid-template-columns: 1fr 1.1fr;
+  }
+}
+
+.update-box,
+.info-box {
+  padding: 18px;
+  border-radius: var(--radius-m);
+  background: var(--cream);
+  display: grid;
+  align-content: start;
+  gap: 12px;
+  h3 {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1rem;
+    color: var(--brown);
+  }
+}
+
+.field {
+  display: grid;
+  gap: 5px;
+  span {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--brown);
+  }
+  input,
+  select {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 12px;
+    border: 1px solid rgba(174, 98, 91, 0.24);
+    background: #fff;
+    font: inherit;
+    font-size: 0.9rem;
+  }
+}
+
+.item-rows {
+  display: grid;
+  gap: 8px;
+  li {
+    display: grid;
+    grid-template-columns: 48px 1fr auto;
+    align-items: center;
+    gap: 10px;
+    padding: 8px;
+    border-radius: 12px;
+    background: #fff;
+    font-size: 0.88rem;
+    small {
+      display: block;
+      color: var(--ink-soft);
+    }
+  }
+}
+
+.it-img {
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.dest-info {
+  padding-top: 8px;
+  border-top: 1px dashed rgba(174, 98, 91, 0.2);
+  display: grid;
+  gap: 4px;
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  strong {
+    color: var(--ink);
+  }
+}
+
+.empty-ao {
+  padding: 36px;
+  border-radius: var(--radius-l);
+  background: #fff;
+  text-align: center;
+  color: var(--ink-soft);
+}

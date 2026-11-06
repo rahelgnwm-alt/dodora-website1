@@ -12,6 +12,7 @@ import {
 import { NavigationStart, Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map } from 'rxjs';
+import { AuthService } from '../../data/auth.service';
 import { CartService } from '../../data/cart.service';
 import { CatalogService } from '../../data/catalog.service';
 import { CATEGORY_LABEL, type Category } from '../../data/product.model';
@@ -28,6 +29,7 @@ import { IdrPipe, ProductImage } from '../product-image/product-image';
   styleUrl: './header.scss',
 })
 export class Header {
+  protected readonly auth = inject(AuthService);
   protected readonly cart = inject(CartService);
   private readonly catalog = inject(CatalogService);
   private readonly router = inject(Router);

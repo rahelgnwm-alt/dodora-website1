@@ -1,0 +1,244 @@
+@use '../../../styles/tokens' as *;
+
+.co-page {
+  padding: calc(var(--header-h) + clamp(28px, 4vw, 52px)) 0 clamp(64px, 8vw, 110px);
+}
+
+.co-head {
+  margin-bottom: 28px;
+  display: grid;
+  gap: 8px;
+  h1 {
+    font-size: clamp(2rem, 4vw, 3.2rem);
+  }
+}
+
+.login-hint {
+  color: var(--ink-soft);
+  a {
+    color: var(--brown);
+    font-weight: 700;
+    text-decoration: underline;
+  }
+}
+
+.co-grid {
+  display: grid;
+  gap: 28px;
+  align-items: start;
+  @include up($bp-md) {
+    grid-template-columns: 1.35fr 0.85fr;
+  }
+}
+
+.co-form {
+  display: grid;
+  gap: 22px;
+}
+
+.card {
+  padding: clamp(20px, 3vw, 30px);
+  border-radius: var(--radius-l);
+  background: #fff;
+  box-shadow: var(--shadow-soft);
+  display: grid;
+  gap: 18px;
+  h2 {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.25rem;
+    color: var(--brown);
+  }
+}
+
+.fields {
+  display: grid;
+  gap: 14px;
+}
+
+.row2 {
+  display: grid;
+  gap: 14px;
+  @include up($bp-sm) {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+  > span {
+    font-size: 0.86rem;
+    font-weight: 600;
+    color: var(--brown);
+  }
+  input,
+  textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border-radius: 16px;
+    border: 2px solid rgba(174, 98, 91, 0.18);
+    background: var(--cream);
+    font: inherit;
+    color: var(--ink);
+    &:focus {
+      outline: none;
+      border-color: var(--salmon);
+      background: #fff;
+    }
+  }
+}
+
+.free-banner {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: var(--radius-m);
+  background: rgba(137, 174, 219, 0.22);
+  color: #2c4e78;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.choice-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.pay-grid {
+  display: grid;
+  gap: 10px;
+  @include up($bp-sm) {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.choice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 18px;
+  border-radius: var(--radius-m);
+  border: 2px solid rgba(174, 98, 91, 0.16);
+  background: var(--cream);
+  color: var(--ink);
+  text-align: left;
+  transition: border-color var(--dur-hover) var(--ease-out), background-color var(--dur-hover) var(--ease-out);
+  small {
+    display: block;
+    color: var(--ink-soft);
+    font-size: 0.82rem;
+  }
+  &.is-active {
+    border-color: var(--brown);
+    background: #fff;
+    box-shadow: 0 10px 22px -14px rgba(174, 98, 91, 0.6);
+  }
+}
+
+.choice-price {
+  font-weight: 700;
+  color: var(--brown);
+}
+
+.co-summary {
+  @include up($bp-md) {
+    position: sticky;
+    top: calc(var(--header-h) + 20px);
+  }
+}
+
+.sum-lines {
+  display: grid;
+  gap: 12px;
+  max-height: 320px;
+  overflow: auto;
+  li {
+    display: grid;
+    grid-template-columns: 56px 1fr auto;
+    align-items: center;
+    gap: 12px;
+  }
+}
+
+.sum-img {
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.sum-txt {
+  display: grid;
+  line-height: 1.25;
+  small {
+    color: var(--ink-soft);
+  }
+}
+
+.sum-price {
+  font-weight: 600;
+  font-size: 0.94rem;
+}
+
+.sum-rows {
+  display: grid;
+  gap: 10px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(174, 98, 91, 0.15);
+  > div {
+    display: flex;
+    justify-content: space-between;
+    color: var(--ink-soft);
+  }
+  .sum-total {
+    padding-top: 10px;
+    border-top: 1px dashed rgba(174, 98, 91, 0.25);
+    font-size: 1.18rem;
+    color: var(--brown);
+  }
+}
+
+.ext-checkout {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  font-size: 0.84rem;
+  color: var(--ink-soft);
+  &:hover {
+    color: var(--brown);
+  }
+}
+
+.co-done {
+  max-width: 580px;
+  margin: 40px auto;
+  padding: clamp(28px, 5vw, 48px);
+  border-radius: var(--radius-l);
+  background: #fff;
+  box-shadow: var(--shadow-lift);
+  text-align: center;
+  display: grid;
+  justify-items: center;
+  gap: 14px;
+}
+
+.done-icon {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--salmon);
+  color: #fff;
+}
+
+.done-actions {
+  margin-top: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+}

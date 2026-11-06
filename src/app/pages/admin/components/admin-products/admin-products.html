@@ -1,0 +1,204 @@
+<div class="ap-wrap">
+  <div class="ap-toolbar">
+    <div class="ap-filters">
+      <div class="cat-pills">
+        @for (c of categories; track c) {
+          <button type="button" [class.is-active]="filterCat() === c" (click)="filterCat.set(c)">{{ catLabel(c) }}</button>
+        }
+      </div>
+      <label class="search-box" aria-label="Cari produk">
+        <app-icon name="search" [size]="18" />
+        <input type="search" [ngModel]="searchQuery()" (ngModelChange)="searchQuery.set($event)" placeholder="Cari nama produk…" />
+      </label>
+    </div>
+
+    <div class="ap-actions">
+      @if (!confirmReset()) {
+        <button type="button" class="btn btn--soft btn--sm" (click)="confirmReset.set(true)">
+          <span class="btn-label"><app-icon name="refresh" [size]="16" /> Reset Default</span>
+        </button>
+      } @else {
+        <button type="button" class="btn btn--sm" (click)="resetCatalog()"><span class="btn-label">Ya, Reset</span></button>
+        <button type="button" class="btn btn--soft btn--sm" (click)="confirmReset.set(false)"><span class="btn-label">Batal</span></button>
+      }
+      <button type="button" class="btn btn--sm" (click)="openCreate()">
+        <span class="btn-label"><app-icon name="plus" [size]="18" [stroke]="2.6" /> Upload Produk Baru</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ── Create / Edit Product Form ── -->
+  @if (editorOpen()) {
+    <section class="editor-card" aria-labelledby="ed-title">
+      <header class="ed-head">
+        <div>
+          <p class="eyebrow">{{ editingId ? 'Edit Produk' : 'Produk Baru' }}</p>
+          <h2 id="ed-title">{{ editingId ? 'Perbarui Detail & Foto Produk' : 'Upload Produk Baru ke Katalog' }}</h2>
+        </div>
+        <button type="button" class="icon-close" (click)="closeEditor()" aria-label="Tutup form"><app-icon name="close" [size]="22" /></button>
+      </header>
+
+      <form class="ed-form" (ngSubmit)="saveProduct()">
+        <div class="ed-cols">
+          <!-- Left: Photo Upload & Gallery -->
+          <div class="ed-media">
+            <h3>Foto Produk ({{ formImages().length }})</h3>
+            <label class="dropzone" [class.is-busy]="uploadingImg()">
+              <input type="file" accept="image/*" multiple (change)="onUploadFiles($event)" [disabled]="uploadingImg()" />
+              <span class="dz-ic"><app-icon name="upload" [size]="24" /></span>
+              <strong>{{ uploadingImg() ? 'Memproses gambar…' : 'Klik untuk Upload Foto dari Perangkat' }}</strong>
+              <small>Mendukung JPG, PNG, WebP (bisa pilih lebih dari 1 foto)</small>
+            </label>
+
+            <div class="url-add">
+              <input type="url" name="formImageUrl" [(ngModel)]="formImageUrl" placeholder="Atau tempel URL foto https://…" />
+              <button type="button" (click)="addImageUrl()">+ URL</button>
+            </div>
+
+            @if (formImages().length > 0) {
+              <ul class="img-list">
+                @for (img of formImages(); track $index; let i = $index) {
+                  <li class="img-item">
+                    <img [src]="img" alt="" />
+                    @if (i === 0) {
+                      <span class="primary-tag">Utama</span>
+                    } @else {
+                      <button type="button" class="make-primary" (click)="setPrimaryImage(i)">Utama</button>
+                    }
+                    <button type="button" class="rm-img" (click)="removeImage(i)" aria-label="Hapus foto"><app-icon name="close" [size]="14" /></button>
+                  </li>
+                }
+              </ul>
+            }
+          </div>
+
+          <!-- Right: Fields & Variants -->
+          <div class="ed-fields">
+            <div class="row2">
+              <label class="field">
+                <span>Nama Produk *</span>
+                <input type="text" name="formName" [(ngModel)]="formName" required placeholder="Contoh: Calming Baby Oil" />
+              </label>
+              <label class="field">
+                <span>Tagline Singkat</span>
+                <input type="text" name="formTagline" [(ngModel)]="formTagline" placeholder="Contoh: Menenangkan & melembapkan kulit Si Kecil" />
+              </label>
+            </div>
+
+            <div class="row2">
+              <label class="field">
+                <span>Kategori</span>
+                <select name="formCategory" [(ngModel)]="formCategory">
+                  @for (c of productCategories; track c) {
+                    <option [ngValue]="c">{{ catLabel(c) }}</option>
+                  }
+                </select>
+              </label>
+              <label class="field">
+                <span>Langkah Rutinitas</span>
+                <select name="formStep" [(ngModel)]="formStep">
+                  @for (s of steps; track s.key) {
+                    <option [ngValue]="s.key">{{ s.label }}</option>
+                  }
+                </select>
+              </label>
+            </div>
+
+            <div class="row2">
+              <label class="field">
+                <span>Netto (pisahkan koma jika lebih dari 1)</span>
+                <input type="text" name="formNetto" [(ngModel)]="formNetto" placeholder="Contoh: 250 ml" />
+              </label>
+              <label class="field">
+                <span>Nomor BPOM</span>
+                <input type="text" name="formBpom" [(ngModel)]="formBpom" placeholder="Contoh: NA18240702210" />
+              </label>
+            </div>
+
+            <div class="variants-box">
+              <div class="vb-head">
+                <span>Varian &amp; Harga (IDR)</span>
+                <button type="button" class="add-var-btn" (click)="addVariant()">+ Tambah Varian</button>
+              </div>
+              @for (v of formVariants(); track v.id; let vi = $index) {
+                <div class="var-row">
+                  <input type="text" [name]="'vt-' + vi" [(ngModel)]="v.title" placeholder="Nama varian (Satuan)" aria-label="Nama varian" />
+                  <input type="number" [name]="'vp-' + vi" [(ngModel)]="v.price" min="0" placeholder="Harga (Rp)" aria-label="Harga" />
+                  <input type="number" [name]="'vc-' + vi" [(ngModel)]="v.compare" min="0" placeholder="Harga coret (opsional)" aria-label="Harga coret" />
+                  <label class="avail-chk">
+                    <input type="checkbox" [name]="'va-' + vi" [(ngModel)]="v.available" />
+                    <span>Tersedia</span>
+                  </label>
+                  @if (formVariants().length > 1) {
+                    <button type="button" class="rm-var" (click)="removeVariant(vi)" aria-label="Hapus varian"><app-icon name="trash" [size]="16" /></button>
+                  }
+                </div>
+              }
+            </div>
+
+            <label class="field">
+              <span>Deskripsi Produk (pisahkan paragraf dengan baris baru)</span>
+              <textarea name="formDesc" [(ngModel)]="formDesc" rows="4" placeholder="Tulis manfaat utama, bahan aktif alami, dan cara pakai produk…"></textarea>
+            </label>
+          </div>
+        </div>
+
+        <footer class="ed-foot">
+          <button type="button" class="btn btn--soft btn--sm" (click)="closeEditor()"><span class="btn-label">Batal</span></button>
+          <button type="submit" class="btn btn--sm">
+            <span class="btn-label"><app-icon name="check" [size]="18" /> {{ editingId ? 'Simpan Perubahan' : 'Publikasikan Produk' }}</span>
+          </button>
+        </footer>
+      </form>
+    </section>
+  }
+
+  <!-- ── Product Grid / Table ── -->
+  <div class="prod-list">
+    @for (p of filteredProducts(); track p.id) {
+      <article class="prod-row">
+        <a class="pr-img" [routerLink]="['/produk', p.handle]">
+          <app-pimg [src]="p.images[0]" sizes="88px" />
+        </a>
+
+        <div class="pr-info">
+          <div class="pr-badges">
+            <span class="cat-badge">{{ catLabel(p.category) }}</span>
+            <span class="stock-badge" [class.is-out]="!inStock(p)">{{ inStock(p) ? 'Tersedia' : 'Habis' }}</span>
+            @if (p.bpom.length) {
+              <span class="bpom-txt">BPOM {{ p.bpom[0] }}</span>
+            }
+          </div>
+          <h3><a [routerLink]="['/produk', p.handle]">{{ p.name }}</a></h3>
+          <p>{{ p.tagline }}</p>
+        </div>
+
+        <div class="pr-price">
+          @if (p.variants.length > 1) {
+            <small>{{ p.variants.length }} varian · mulai</small>
+          }
+          <strong>{{ minPrice(p) | idr }}</strong>
+        </div>
+
+        <div class="pr-actions">
+          @if (confirmDeleteId() === p.id) {
+            <span class="del-prompt">Hapus?</span>
+            <button type="button" class="act-btn act-btn--danger" (click)="confirmDelete(p.id)">Ya, Hapus</button>
+            <button type="button" class="act-btn" (click)="confirmDeleteId.set(null)">Batal</button>
+          } @else {
+            <button type="button" class="act-btn" (click)="openEdit(p)">
+              <app-icon name="edit" [size]="16" /> Edit
+            </button>
+            <button type="button" class="act-btn act-btn--del" (click)="confirmDeleteId.set(p.id)" [attr.aria-label]="'Hapus ' + p.name">
+              <app-icon name="trash" [size]="16" /> Hapus
+            </button>
+          }
+        </div>
+      </article>
+    } @empty {
+      <div class="empty-box">
+        <p>Tidak ada produk pada filter ini.</p>
+      </div>
+    }
+  </div>
+</div>

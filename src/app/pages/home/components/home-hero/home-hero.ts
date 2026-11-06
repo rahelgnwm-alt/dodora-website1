@@ -13,6 +13,7 @@ import { Icon } from '../../../../components/icon/icon';
 import { IdrPipe, ProductImage } from '../../../../components/product-image/product-image';
 import { CartService } from '../../../../data/cart.service';
 import { CatalogService } from '../../../../data/catalog.service';
+import { SiteConfigService } from '../../../../data/site-config.service';
 import { FloatDirective, MagneticDirective } from '../../../../motion/directives';
 import { MotionService } from '../../../../motion/motion.service';
 import { pageTransition, pointerParallax, scrollParallax } from '../../../../motion/utilities';
@@ -34,6 +35,7 @@ export class HomeHero {
   private readonly motion = inject(MotionService);
   private readonly catalog = inject(CatalogService);
   private readonly cart = inject(CartService);
+  protected readonly siteConfig = inject(SiteConfigService);
   private readonly destroyRef = inject(DestroyRef);
 
   private readonly root = viewChild.required<ElementRef<HTMLElement>>('root');

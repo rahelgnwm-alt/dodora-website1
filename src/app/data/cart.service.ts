@@ -84,6 +84,10 @@ export class CartService {
     this.commit(this.lines().filter((l) => l.variantId !== variantId));
   }
 
+  clear() {
+    this.commit([]);
+  }
+
   private commit(next: CartLine[]) {
     const prev = this.lines();
     this.lines.set(next);
