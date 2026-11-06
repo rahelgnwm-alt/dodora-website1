@@ -1,5 +1,6 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 import type { CartLine } from './product.model';
+import { PRODUCTS } from './products.data';
 import { ToastService } from './toast.service';
 
 export type OrderStatus = 'confirmed' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
@@ -45,7 +46,27 @@ export const TRACKING_STEPS: readonly { key: Exclude<OrderStatus, 'cancelled'>; 
   { key: 'delivered', label: 'Diterima' },
 ];
 
-const ORDERS_KEY = 'dodora:orders:v1';
+const LEGACY_ORDERS_KEY = 'dodora:orders:v1';
+const ORDERS_KEY = 'dodora:orders:v2';
+
+function seedLine(handle: string, qty = 1): CartLine {
+  const prod = PRODUCTS.find((p) => p.handle === handle) ?? PRODUCTS[0];
+  const v = prod.variants[0];
+  return {
+    variantId: v.id,
+    productId: prod.id,
+    handle: prod.handle,
+    name: prod.name,
+    variantTitle: v.title,
+    price: v.price,
+    qty,
+    image: prod.images[0],
+  };
+}
+
+const SEED_LINE_BATH = seedLine('dodora-baby-and-kids-body-bath', 1);
+const SEED_LINE_SHAMPOO = seedLine('dodora-baby-and-kids-gentle-hair-shampoo', 1);
+const SEED_LINE_BUNDLE = seedLine('dodora-spesial-bundling-perawatan-kulit-harian-body-bath-lotion-multipurpose-balm', 1);
 
 const SEEDED_ORDERS: Order[] = [
   {
@@ -56,31 +77,10 @@ const SEEDED_ORDERS: Order[] = [
     address: 'Jl. Kemang Timur No. 24, Bangka, Mampang Prapatan, Jakarta Selatan 12730',
     notes: 'Tolong titip di pos sekuriti jika sedang tidur siang ya, terima kasih!',
     createdAt: '2026-11-05T09:15:00+07:00',
-    items: [
-      {
-        variantId: '45952897122536',
-        productId: '8873035038952',
-        handle: 'dodora-baby-and-kids-body-bath',
-        name: 'Body Bath',
-        variantTitle: 'Satuan',
-        price: 112001,
-        qty: 1,
-        image: 'https://cdn.shopify.com/s/files/1/0693/1133/2584/files/id-11134207-7rbk8-m8k26x2l1684c1.jpg',
-      },
-      {
-        variantId: '45952898138344',
-        productId: '8873035563240',
-        handle: 'dodora-baby-and-kids-gentle-hair-shampoo',
-        name: 'Gentle Hair Shampoo',
-        variantTitle: 'Satuan',
-        price: 112000,
-        qty: 1,
-        image: 'https://cdn.shopify.com/s/files/1/0693/1133/2584/files/id-11134207-7rbk3-m8k26x2l2kske6.jpg',
-      },
-    ],
-    subtotal: 224001,
+    items: [SEED_LINE_BATH, SEED_LINE_SHAMPOO],
+    subtotal: SEED_LINE_BATH.price + SEED_LINE_SHAMPOO.price,
     shippingCost: 12000,
-    total: 236001,
+    total: SEED_LINE_BATH.price + SEED_LINE_SHAMPOO.price + 12000,
     courier: 'SiCepat BEST',
     paymentMethod: 'QRIS',
     trackingNumber: '004928174621',
@@ -113,21 +113,10 @@ const SEEDED_ORDERS: Order[] = [
     phone: '0812-8899-1020',
     address: 'Jl. Kemang Timur No. 24, Bangka, Mampang Prapatan, Jakarta Selatan 12730',
     createdAt: '2026-10-21T14:10:00+07:00',
-    items: [
-      {
-        variantId: '45952899055848',
-        productId: '8873036087528',
-        handle: 'dodora-spesial-bundling-perawatan-kulit-harian-body-bath-lotion-multipurpose-balm',
-        name: 'Paket Perawatan Kulit Harian',
-        variantTitle: 'Satuan',
-        price: 279999,
-        qty: 1,
-        image: 'https://cdn.shopify.com/s/files/1/0693/1133/2584/files/id-11134207-7rbk9-m98ab5cbefm7b1.jpg',
-      },
-    ],
-    subtotal: 279999,
+    items: [SEED_LINE_BUNDLE],
+    subtotal: SEED_LINE_BUNDLE.price,
     shippingCost: 0,
-    total: 279999,
+    total: SEED_LINE_BUNDLE.price,
     courier: 'JNE Reguler (Gratis Ongkir)',
     paymentMethod: 'BCA Virtual Account',
     trackingNumber: 'JP9938104728',
@@ -283,9 +272,30 @@ export class OrderService {
   }
 
   private load(): Order[] {
+    const seedIds = new Set(SEEDED_ORDERS.map((s) => s.id));
+    const repairOrder = (o: Order): Order => ({
+      ...o,
+      items: o.items.map((it) => {
+        if (!it.image || it.image.includes('0693/1133/2584')) {
+          const match = PRODUCTS.find((p) => p.handle === it.handle || p.id === it.productId);
+          if (match?.images[0]) return { ...it, image: match.images[0] };
+        }
+        return it;
+      }),
+    });
+
     try {
-      const raw = JSON.parse(localStorage.getItem(ORDERS_KEY) ?? 'null');
-      if (Array.isArray(raw) && raw.length > 0) return raw;
+      const v2 = JSON.parse(localStorage.getItem(ORDERS_KEY) ?? 'null');
+      if (Array.isArray(v2) && v2.length > 0) return v2.map(repairOrder);
+
+      const v1 = JSON.parse(localStorage.getItem(LEGACY_ORDERS_KEY) ?? 'null');
+      if (Array.isArray(v1) && v1.length > 0) {
+        const custom = (v1 as Order[]).filter((o) => !seedIds.has(o.id)).map(repairOrder);
+        const merged = [...custom, ...SEEDED_ORDERS];
+        this.persist(merged);
+        localStorage.removeItem(LEGACY_ORDERS_KEY);
+        return merged;
+      }
     } catch {
       /* fallback */
     }
@@ -300,3 +310,4 @@ export class OrderService {
     }
   }
 }
+

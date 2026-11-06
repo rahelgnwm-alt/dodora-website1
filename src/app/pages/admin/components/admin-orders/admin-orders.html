@@ -72,7 +72,7 @@
                 <ul class="item-rows">
                   @for (it of o.items; track it.variantId) {
                     <li>
-                      <span class="it-img"><app-pimg [src]="it.image" sizes="56px" /></span>
+                      <span class="it-img"><app-pimg [src]="itemImage(it)" [alt]="it.name" sizes="56px" /></span>
                       <div>
                         <strong>{{ it.name }}</strong>
                         <small>{{ it.variantTitle }} × {{ it.qty }}</small>

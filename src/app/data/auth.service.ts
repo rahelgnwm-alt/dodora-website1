@@ -194,3 +194,4 @@ export const adminGuard: CanActivateFn = (_route, state) => {
   if (auth.isLoggedIn()) return router.createUrlTree(['/akun']);
   return router.createUrlTree(['/masuk'], { queryParams: { redirect: state.url } });
 };
+

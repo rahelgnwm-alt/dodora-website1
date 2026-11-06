@@ -152,7 +152,7 @@
                             @for (item of ord.items; track item.variantId) {
                               <li>
                                 <a class="oi-img" [routerLink]="['/produk', item.handle]">
-                                  <app-pimg [src]="item.image" sizes="64px" />
+                                  <app-pimg [src]="itemImage(item)" [alt]="item.name" sizes="64px" />
                                 </a>
                                 <div class="oi-txt">
                                   <a [routerLink]="['/produk', item.handle]"><strong>{{ item.name }}</strong></a>

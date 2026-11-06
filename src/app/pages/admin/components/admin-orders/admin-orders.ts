@@ -3,6 +3,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { FormsModule } from '@angular/forms';
 import { Icon } from '../../../../components/icon/icon';
 import { IdrPipe, ProductImage } from '../../../../components/product-image/product-image';
+import { CatalogService } from '../../../../data/catalog.service';
 import { ORDER_STATUS_LABEL, OrderService, type Order, type OrderStatus } from '../../../../data/order.service';
 
 @Component({
@@ -14,6 +15,7 @@ import { ORDER_STATUS_LABEL, OrderService, type Order, type OrderStatus } from '
 })
 export class AdminOrders {
   protected readonly orderSvc = inject(OrderService);
+  private readonly catalog = inject(CatalogService);
 
   protected readonly statuses: OrderStatus[] = ['confirmed', 'processing', 'shipped', 'delivered', 'cancelled'];
   protected readonly statusLabel = (s: OrderStatus) => ORDER_STATUS_LABEL[s];
@@ -69,5 +71,10 @@ export class AdminOrders {
     const note = this.draftNote()[o.id] ?? '';
     this.orderSvc.updateOrderStatus(o.id, status, resi, note);
     this.setNote(o.id, '');
+  }
+
+  protected itemImage(item: Order['items'][number]): string {
+    const live = this.catalog.byHandle(item.handle) ?? this.catalog.all.find((p) => p.id === item.productId);
+    return live?.images[0] || item.image;
   }
 }

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Pipe, PipeTransform, computed, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Pipe, PipeTransform, computed, effect, input, signal } from '@angular/core';
 
 const WIDTHS = [240, 360, 480, 640, 800, 1000];
 
@@ -34,6 +34,23 @@ export class ProductImage {
   readonly alt = input<string>('');
   readonly sizes = input<string>('(min-width: 900px) 30vw, 90vw');
   readonly eager = input<boolean>(false);
-  readonly url = computed(() => cdn(this.src(), 640));
-  readonly srcset = computed(() => (isShopifyCdn(this.src()) ? WIDTHS.map((w) => `${cdn(this.src(), w)} ${w}w`).join(', ') : null));
+
+  private readonly failed = signal(false);
+
+  constructor() {
+    effect(() => {
+      this.src();
+      this.failed.set(false);
+    });
+  }
+
+  protected readonly effectiveSrc = computed(() => (this.failed() || !this.src() ? 'img/scene-bath.webp' : this.src()));
+  readonly url = computed(() => cdn(this.effectiveSrc(), 640));
+  readonly srcset = computed(() =>
+    isShopifyCdn(this.effectiveSrc()) ? WIDTHS.map((w) => `${cdn(this.effectiveSrc(), w)} ${w}w`).join(', ') : null,
+  );
+
+  protected onError() {
+    if (!this.failed()) this.failed.set(true);
+  }
 }

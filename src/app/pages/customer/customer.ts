@@ -94,6 +94,11 @@ export class Customer {
     return this.orderSvc.stepIndex(status);
   }
 
+  protected itemImage(item: Order['items'][number]): string {
+    const live = this.catalog.byHandle(item.handle) ?? this.catalog.all.find((p) => p.id === item.productId);
+    return live?.images[0] || item.image;
+  }
+
   protected confirmReceived(ord: Order) {
     this.orderSvc.confirmReceivedByCustomer(ord.id);
   }

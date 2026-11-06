@@ -101,3 +101,4 @@ export function compressImageFile(file: File, maxDim = 1100, quality = 0.84): Pr
     reader.readAsDataURL(file);
   });
 }
+
