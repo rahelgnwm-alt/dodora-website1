@@ -78,7 +78,7 @@ export class HomeHero {
       gsap.set(this.circle().nativeElement, { scale: 0.55, autoAlpha: 0 });
       gsap.set(this.frame().nativeElement, { clipPath: 'circle(0% at 50% 62%)' });
       gsap.set(this.img().nativeElement, { scale: 1.16 });
-      gsap.set(lines, { yPercent: 115 });
+      gsap.set(lines, { y: 0, yPercent: 115 });
       gsap.set(q('[data-h]'), { autoAlpha: 0, y: 22 });
       gsap.set(q('[data-h-cta]'), { autoAlpha: 0, y: 20, scale: 0.96 });
       gsap.set(q('[data-h-chip]'), { autoAlpha: 0, y: 30, scale: 0.94 });
@@ -90,8 +90,8 @@ export class HomeHero {
       tl.to(q('[data-h-bg]'), { autoAlpha: 1, duration: 0.9 }, 0) //                     0.0  gradient
         .to(this.circle().nativeElement, { scale: 1, autoAlpha: 1, duration: 1.1, ease: 'expo.out' }, 0.2) // 0.2  backing circle
         .to(this.frame().nativeElement, { clipPath: 'circle(76% at 50% 50%)', duration: 1.15, ease: 'expo.out' }, 0.35) // 0.35 organic mask
-        .to(this.img().nativeElement, { scale: 1, duration: 1.5, ease: 'expo.out' }, 0.35)
-        .to(lines, { yPercent: 0, duration: 0.85, stagger: 0.11, ease: 'expo.out' }, 0.5) // 0.5  headline
+        .to(this.img().nativeElement, { scale: 1, duration: 1.5, ease: 'expo.out', clearProps: 'transform' }, 0.35)
+        .to(lines, { y: 0, yPercent: 0, duration: 0.85, stagger: 0.11, ease: 'expo.out', clearProps: 'transform' }, 0.5) // 0.5  headline
         .to(q('.hero-eyebrow'), { autoAlpha: 1, y: 0, duration: 0.6 }, 0.45)
         .to(q('.hero-lead'), { autoAlpha: 1, y: 0, duration: 0.7 }, 0.7) //               0.7  paragraph
         .to(q('[data-h-cta]'), { autoAlpha: 1, y: 0, scale: 1, duration: 0.6, stagger: 0.1, ease: 'back.out(1.3)' }, 0.85) // 0.85 CTAs
