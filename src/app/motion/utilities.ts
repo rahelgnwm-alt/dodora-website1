@@ -378,16 +378,21 @@ export function scrollParallax(kit: GsapKit, trigger: HTMLElement, targets: HTML
   const ctx = gsap.context(() => {
     targets.forEach((el) => {
       const dist = parseFloat(el.dataset['speed'] ?? '60') * k;
-      gsap.to(el, {
-        y: dist * 0.45,
-        ease: 'none',
-        scrollTrigger: {
-          trigger,
-          start: 'top top',
-          end: 'bottom top',
-          scrub: true,
+      gsap.fromTo(
+        el,
+        { y: 0 },
+        {
+          y: dist * 0.45,
+          ease: 'none',
+          scrollTrigger: {
+            trigger,
+            start: 'top top',
+            end: 'bottom top',
+            scrub: true,
+            invalidateOnRefresh: true,
+          },
         },
-      });
+      );
     });
   }, trigger);
   return () => ctx.revert();

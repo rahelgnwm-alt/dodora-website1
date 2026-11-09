@@ -89,9 +89,9 @@ export class HomeHero {
       const tl = gsap.timeline({ paused: true, defaults: { ease: 'power3.out' } });
       tl.to(q('[data-h-bg]'), { autoAlpha: 1, duration: 0.9 }, 0) //                     0.0  gradient
         .to(this.circle().nativeElement, { scale: 1, autoAlpha: 1, duration: 1.1, ease: 'expo.out' }, 0.2) // 0.2  backing circle
-        .to(this.frame().nativeElement, { clipPath: 'circle(76% at 50% 50%)', duration: 1.15, ease: 'expo.out', clearProps: 'clipPath' }, 0.35) // 0.35 organic mask
-        .to(this.img().nativeElement, { scale: 1, duration: 1.5, ease: 'expo.out', clearProps: 'transform' }, 0.35)
-        .to(lines, { yPercent: 0, duration: 0.85, stagger: 0.11, ease: 'expo.out', clearProps: 'transform' }, 0.5) // 0.5  headline
+        .to(this.frame().nativeElement, { clipPath: 'circle(76% at 50% 50%)', duration: 1.15, ease: 'expo.out' }, 0.35) // 0.35 organic mask
+        .to(this.img().nativeElement, { scale: 1, duration: 1.5, ease: 'expo.out' }, 0.35)
+        .to(lines, { yPercent: 0, duration: 0.85, stagger: 0.11, ease: 'expo.out' }, 0.5) // 0.5  headline
         .to(q('.hero-eyebrow'), { autoAlpha: 1, y: 0, duration: 0.6 }, 0.45)
         .to(q('.hero-lead'), { autoAlpha: 1, y: 0, duration: 0.7 }, 0.7) //               0.7  paragraph
         .to(q('[data-h-cta]'), { autoAlpha: 1, y: 0, scale: 1, duration: 0.6, stagger: 0.1, ease: 'back.out(1.3)' }, 0.85) // 0.85 CTAs
@@ -101,18 +101,13 @@ export class HomeHero {
 
       this.motion.whenPreloaderDone().then(() => tl.play());
 
-      // ── Scroll-linked: layers drift smoothly in 1:1 lockstep with scroll, eliminating lag fighting ──
+      // ── Scroll-linked: decorative layers drift smoothly, photo & content stay stable and 100% visible ──
       if (!env.lite) {
-        const k = env.mobile ? 0.5 : 1;
-        const st = { trigger: root, start: 'top top', end: 'bottom top', scrub: true };
-        gsap.to(this.copy().nativeElement, {
-          y: -45 * k,
-          opacity: 0,
-          ease: 'none',
-          scrollTrigger: { trigger: root, start: 'top top', end: 'bottom 20%', scrub: true },
-        });
-        gsap.to(this.visual().nativeElement, { y: -60 * k, ease: 'none', scrollTrigger: st });
-        gsap.to(q('.hero-grad'), { yPercent: 10, ease: 'none', scrollTrigger: st });
+        const k = env.mobile ? 0.4 : 0.7;
+        const st = { trigger: root, start: 'top top', end: 'bottom top', scrub: true, invalidateOnRefresh: true };
+        gsap.fromTo(q('.hero-grad'), { yPercent: 0 }, { yPercent: 8 * k, ease: 'none', scrollTrigger: st });
+        gsap.fromTo(this.copy().nativeElement, { y: 0 }, { y: -20 * k, ease: 'none', scrollTrigger: st });
+        gsap.fromTo(this.visual().nativeElement, { y: 0 }, { y: -24 * k, ease: 'none', scrollTrigger: st });
       }
     }, root);
 

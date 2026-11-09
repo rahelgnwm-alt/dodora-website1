@@ -30,6 +30,14 @@
   }
 }
 
+.hero.is-primed {
+  .hero-copy,
+  .hero-visual {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
 .hero-bg {
   position: absolute;
   inset: 0;
@@ -79,7 +87,7 @@
   display: grid;
   justify-items: start;
   gap: clamp(16px, 2vw, 26px);
-  will-change: transform, opacity;
+  will-change: transform;
   transform: translateZ(0);
 }
 .hero-title {
