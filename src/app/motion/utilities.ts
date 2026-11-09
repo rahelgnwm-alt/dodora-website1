@@ -327,37 +327,67 @@ export function pointerParallax(kit: GsapKit, root: HTMLElement, env: MotionEnv,
     y: gsap.quickTo(el, 'y', { duration: 1.2, ease: 'power3.out' }),
     d: parseFloat(el.dataset['depth'] ?? '0'),
   }));
-  const onMove = (e: PointerEvent) => {
+
+  let frame = 0;
+  let lastEvent: PointerEvent | null = null;
+
+  const tick = () => {
+    frame = 0;
+    if (!lastEvent) return;
     const r = root.getBoundingClientRect();
-    const nx = (e.clientX - r.left) / r.width - 0.5;
-    const ny = (e.clientY - r.top) / r.height - 0.5;
+    if (!r.width || !r.height) return;
+    const nx = (lastEvent.clientX - r.left) / r.width - 0.5;
+    const ny = (lastEvent.clientY - r.top) / r.height - 0.5;
     layers.forEach((l) => {
       l.x(nx * l.d);
       l.y(ny * l.d);
     });
   };
-  const onLeave = () => layers.forEach((l) => (l.x(0), l.y(0)));
+
+  const onMove = (e: PointerEvent) => {
+    lastEvent = e;
+    if (!frame) frame = requestAnimationFrame(tick);
+  };
+
+  const onLeave = () => {
+    if (frame) {
+      cancelAnimationFrame(frame);
+      frame = 0;
+    }
+    lastEvent = null;
+    layers.forEach((l) => {
+      l.x(0);
+      l.y(0);
+    });
+  };
+
   root.addEventListener('pointermove', onMove, { passive: true });
   root.addEventListener('pointerleave', onLeave);
   return () => {
+    if (frame) cancelAnimationFrame(frame);
     root.removeEventListener('pointermove', onMove);
     root.removeEventListener('pointerleave', onLeave);
   };
 }
 
-/** Scroll-linked vertical drift (scrubbed, no artificial delay). `data-speed` is the y travel in px. */
+/** Scroll-linked vertical drift (scrubbed, locked directly to scroll position for zero stutter). `data-speed` is the y travel in px. */
 export function scrollParallax(kit: GsapKit, trigger: HTMLElement, targets: HTMLElement[], env: MotionEnv): Disposer {
   if (env.reduced || env.lite) return noop;
   const { gsap } = kit;
-  const k = env.mobile ? 0.35 : 0.7;
+  const k = env.mobile ? 0.35 : 0.65;
   const ctx = gsap.context(() => {
     targets.forEach((el) => {
       const dist = parseFloat(el.dataset['speed'] ?? '60') * k;
-      gsap.fromTo(
-        el,
-        { y: -dist * 0.5 },
-        { y: dist * 0.5, ease: 'none', scrollTrigger: { trigger, start: 'top bottom', end: 'bottom top', scrub: 0.8 } },
-      );
+      gsap.to(el, {
+        y: dist * 0.45,
+        ease: 'none',
+        scrollTrigger: {
+          trigger,
+          start: 'top top',
+          end: 'bottom top',
+          scrub: true,
+        },
+      });
     });
   }, trigger);
   return () => ctx.revert();

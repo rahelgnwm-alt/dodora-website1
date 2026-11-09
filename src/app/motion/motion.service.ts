@@ -81,7 +81,8 @@ export class MotionService {
       kit.gsap.ticker.add((time) => {
         lenis.raf(time * 1000);
       });
-      kit.gsap.ticker.lagSmoothing(500, 33);
+      // lagSmoothing(0) prevents GSAP from clamping Lenis RAF delta on scroll start
+      kit.gsap.ticker.lagSmoothing(0);
       this.lenis = lenis;
     } catch {
       /* native scroll remains */
