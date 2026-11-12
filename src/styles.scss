@@ -64,6 +64,8 @@
   --header-h: 84px;
   --gutter: clamp(20px, 5vw, 72px);
   --maxw: 1320px;
+  // Clears the footer's upward-overlapping <app-curve> (36–110px) plus clean visual breathing room.
+  --footer-clear: clamp(128px, 14vw, 200px);
 
   @include down($bp-md) {
     --header-h: 68px;

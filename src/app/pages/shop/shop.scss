@@ -4,7 +4,7 @@
   position: relative;
   overflow: clip;
   min-height: 80svh;
-  padding: calc(var(--header-h) + 70px) 0 clamp(80px, 9vw, 140px);
+  padding: calc(var(--header-h) + 70px) 0 var(--footer-clear);
   background:
     radial-gradient(60% 40% at 90% 0%, rgba(241, 176, 196, 0.45), transparent 70%),
     radial-gradient(50% 40% at 0% 20%, rgba(137, 174, 219, 0.25), transparent 70%);

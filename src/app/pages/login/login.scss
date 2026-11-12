@@ -3,7 +3,7 @@
 .auth-page {
   position: relative;
   overflow: hidden;
-  padding: calc(var(--header-h) + clamp(32px, 5vw, 64px)) 0 clamp(64px, 8vw, 110px);
+  padding: calc(var(--header-h) + clamp(32px, 5vw, 64px)) 0 var(--footer-clear);
 }
 
 .auth-orb1 {

@@ -385,7 +385,7 @@ s {
 }
 
 .rel {
-  padding-block: clamp(60px, 8vw, 110px);
+  padding: clamp(60px, 8vw, 110px) 0 var(--footer-clear);
   h2 {
     margin-bottom: 28px;
     font-size: clamp(1.7rem, 2.6vw + 0.4rem, 2.8rem);
@@ -449,6 +449,6 @@ s {
   display: grid;
   justify-items: start;
   gap: 18px;
-  padding: 180px var(--gutter) 100px;
+  padding: 180px var(--gutter) var(--footer-clear);
 }
 
